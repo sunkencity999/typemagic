@@ -117,12 +117,40 @@ async function setTextInElement(element, text) {
       // Replace selected text
       const range = selection.getRangeAt(0);
       range.deleteContents();
-      range.insertNode(document.createTextNode(text));
-      console.log('🪄 TypeMagic: Replaced selected text in contentEditable');
+      
+      // Convert newlines to proper HTML for contentEditable
+      // Split by double newlines (paragraphs) first, then single newlines (line breaks)
+      const paragraphs = text.split('\n\n');
+      const fragment = document.createDocumentFragment();
+      
+      paragraphs.forEach((para, index) => {
+        if (index > 0) {
+          // Add two br tags between paragraphs to create visual spacing
+          fragment.appendChild(document.createElement('br'));
+          fragment.appendChild(document.createElement('br'));
+        }
+        
+        // Handle single line breaks within paragraphs
+        const lines = para.split('\n');
+        lines.forEach((line, lineIndex) => {
+          if (lineIndex > 0) {
+            fragment.appendChild(document.createElement('br'));
+          }
+          fragment.appendChild(document.createTextNode(line));
+        });
+      });
+      
+      range.insertNode(fragment);
+      console.log('🪄 TypeMagic: Replaced selected text in contentEditable with preserved paragraphs');
     } else {
       // No selection, replace all
-      element.innerText = text;
-      console.log('🪄 TypeMagic: Replaced all text in contentEditable');
+      // For full replacement, use innerHTML to properly handle newlines
+      const htmlText = text
+        .split('\n\n')
+        .map(para => para.split('\n').join('<br>'))
+        .join('<br><br>');
+      element.innerHTML = htmlText;
+      console.log('🪄 TypeMagic: Replaced all text in contentEditable with preserved paragraphs');
     }
   } else {
     element.value = text;
