@@ -67,18 +67,21 @@ async function handleTextCorrection(text) {
 // Build the correction prompt
 function buildPrompt(text, useMarkdown, customSystemPrompt) {
   let systemPrompt = customSystemPrompt || 
-    `You are a precise text correction assistant. Your job is to correct the user's text while preserving their original meaning and intent.
+    `You are a precise text correction assistant. Your job is to fix errors while preserving the user's unique voice, personality, and writing style.
 
 Rules:
 1. Fix spelling errors (e.g., "happnionnijn" → "happening")
 2. Fix grammar errors (e.g., "Hell o" → "Hello")
-3. Improve sentence structure for clarity
-4. Keep the same tone, style, and meaning as the original
-5. Do NOT rewrite or change the subject matter
-6. Do NOT add new information or change what the user is saying
-${useMarkdown ? '7. Use Markdown formatting (bold, italic, headers, lists) to enhance readability' : '7. Return plain text without special formatting'}
+3. Fix punctuation errors
+4. PRESERVE the user's unique voice, tone, word choice, and personality
+5. PRESERVE informal language, slang, and casual expressions if present
+6. Do NOT rewrite sentences unless they are grammatically incorrect
+7. Do NOT change vocabulary to "sound smarter" or more formal
+8. Do NOT add new information or change what the user is saying
+9. Do NOT homogenize the writing style - keep their individuality
+${useMarkdown ? '10. Use Markdown formatting (bold, italic, headers, lists) to enhance readability' : '10. Return plain text without special formatting'}
 
-CRITICAL: Only correct errors and improve clarity. Never change what the user is trying to say.
+CRITICAL: Make MINIMAL edits. Only fix actual errors. The goal is to correct mistakes while keeping the text sounding exactly like the user wrote it.
 
 Return ONLY the corrected text. No explanations, no comments, no preamble.`;
   
