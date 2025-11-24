@@ -480,14 +480,14 @@ function setupSelectionTracking() {
   }
 }
 
-// Keyboard shortcut: Ctrl/Cmd+Shift+E to correct selected text
+// Keyboard shortcut: Ctrl/Cmd+Shift+M to correct selected text
 document.addEventListener('keydown', async (e) => {
-  // Check for Ctrl+Shift+E (Windows/Linux) or Cmd+Shift+E (Mac)
-  if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'E') {
+  // Check for Ctrl+Shift+M (Windows/Linux) or Cmd+Shift+M (Mac)
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'M') {
     e.preventDefault();
     e.stopPropagation();
     
-    console.log('🪄 TypeMagic: Keyboard shortcut triggered (Ctrl/Cmd+Shift+E)');
+    console.log('🪄 TypeMagic: Keyboard shortcut triggered (Ctrl/Cmd+Shift+M)');
     
     const activeElement = document.activeElement;
     
@@ -523,7 +523,7 @@ async function init() {
   // Set up selection tracking for Google Docs
   setupSelectionTracking();
   
-  console.log('🪄 TypeMagic: Initialization complete - use popup button or Ctrl/Cmd+Shift+E to correct text');
+  console.log('🪄 TypeMagic: Initialization complete - use popup button or Ctrl/Cmd+Shift+M to correct text');
 }
 
 // Start when DOM is ready
