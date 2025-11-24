@@ -20,16 +20,11 @@ TypeMagic is a Chrome extension that automatically corrects spelling, grammar, a
 
 1. **Clone or download this repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/sunkencity999/typemagic.git
    cd typemagic
    ```
 
-2. **Generate extension icons** (optional but recommended)
-   - Open `icons/generate-icons.html` in your browser
-   - Icons will auto-download to your downloads folder
-   - Move the downloaded `icon16.png`, `icon48.png`, and `icon128.png` to the `icons/` folder
-
-3. **Load the extension in Chrome**
+2. **Load the extension in Chrome**
    - Open Chrome and navigate to `chrome://extensions/`
    - Enable "Developer mode" (toggle in top-right corner)
    - Click "Load unpacked"
