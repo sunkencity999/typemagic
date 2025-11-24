@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TypeMagic Settings</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+    
+    .header h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+    
+    .header p {
+      opacity: 0.9;
+      font-size: 14px;
+    }
+    
+    .content {
+      padding: 30px;
+    }
+    
+    .section {
+      margin-bottom: 30px;
+    }
+    
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .provider-status {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      font-size: 14px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    }
+    
+    .provider-status strong {
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #555;
+      font-size: 14px;
+    }
+    
+    input[type="text"],
+    input[type="password"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.2s ease;
+    }
+    
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+      font-family: 'Monaco', 'Menlo', monospace;
+    }
+    
+    .provider-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .provider-option {
+      padding: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+      position: relative;
+      background: white;
+    }
+    
+    .provider-option:hover {
+      border-color: #667eea;
+      background: #f5f5f5;
+      transform: translateY(-2px);
+    }
+    
+    .provider-option.selected {
+      border-color: #667eea;
+      border-width: 3px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      transform: scale(1.05);
+    }
+    
+    .provider-option.selected::after {
+      content: '✓ ACTIVE';
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: #4caf50;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: bold;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .provider-option input[type="radio"] {
+      display: none;
+    }
+    
+    .provider-config {
+      display: none;
+      padding: 20px;
+      background: #f9f9f9;
+      border: 2px solid #667eea;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      animation: slideIn 0.3s ease;
+    }
+    
+    .provider-config.active {
+      display: block;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .provider-config::before {
+      content: '⚙️ Configuration for selected provider';
+      display: block;
+      font-weight: 600;
+      color: #667eea;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #667eea;
+    }
+    
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    
+    .checkbox-group input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+    
+    .checkbox-group label {
+      margin: 0;
+      cursor: pointer;
+      flex: 1;
+    }
+    
+    .help-text {
+      font-size: 12px;
+      color: #888;
+      margin-top: 5px;
+    }
+    
+    .btn-container {
+      display: flex;
+      gap: 10px;
+      margin-top: 30px;
+      padding-top: 30px;
+      border-top: 2px solid #e0e0e0;
+    }
+    
+    .btn {
+      flex: 1;
+      padding: 15px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-secondary {
+      background: #e0e0e0;
+      color: #555;
+    }
+    
+    .btn-secondary:hover {
+      background: #d0d0d0;
+    }
+    
+    .save-notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 15px 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transform: translateX(100px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    
+    .save-notification.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    
+    .info-box {
+      background: #e3f2fd;
+      border-left: 4px solid #2196f3;
+      padding: 15px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: #1565c0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>⚙️ TypeMagic Settings</h1>
+      <p>Configure your AI text correction preferences</p>
+    </div>
+    
+    <div class="content">
+      <!-- AI Provider Selection -->
+      <div class="section">
+        <div class="section-title">🤖 AI Provider</div>
+        <div class="provider-status" id="providerStatus">
+          Currently using: <strong id="currentProvider">OpenAI</strong>
+        </div>
+        <div class="provider-options">
+          <label class="provider-option" data-provider="openai">
+            <input type="radio" name="provider" value="openai" checked>
+            <div>OpenAI</div>
+          </label>
+          <label class="provider-option" data-provider="gemini">
+            <input type="radio" name="provider" value="gemini">
+            <div>Gemini</div>
+          </label>
+          <label class="provider-option" data-provider="claude">
+            <input type="radio" name="provider" value="claude">
+            <div>Claude</div>
+          </label>
+          <label class="provider-option" data-provider="ollama">
+            <input type="radio" name="provider" value="ollama">
+            <div>Ollama</div>
+          </label>
+          <label class="provider-option" data-provider="fastapi">
+            <input type="radio" name="provider" value="fastapi">
+            <div>FastAPI</div>
+          </label>
+        </div>
+        
+        <!-- OpenAI Config -->
+        <div class="provider-config" data-provider="openai">
+          <div class="form-group">
+            <label for="openaiKey">OpenAI API Key</label>
+            <input type="password" id="openaiKey" placeholder="sk-...">
+            <div class="help-text">Get your API key from <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a></div>
+          </div>
+          <div class="form-group">
+            <label for="openaiModel">Model</label>
+            <select id="openaiModel">
+              <option value="gpt-4o">GPT-4o</option>
+              <option value="gpt-4o-mini" selected>GPT-4o Mini</option>
+              <option value="gpt-4-turbo">GPT-4 Turbo</option>
+              <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+            </select>
+          </div>
+        </div>
+        
+        <!-- Gemini Config -->
+        <div class="provider-config" data-provider="gemini">
+          <div class="form-group">
+            <label for="geminiKey">Google Gemini API Key</label>
+            <input type="password" id="geminiKey" placeholder="AIza...">
+            <div class="help-text">Get your API key from <a href="https://makersuite.google.com/app/apikey" target="_blank">Google AI Studio</a></div>
+          </div>
+          <div class="form-group">
+            <label for="geminiModel">Model</label>
+            <select id="geminiModel">
+              <option value="gemini-pro" selected>Gemini Pro</option>
+              <option value="gemini-pro-vision">Gemini Pro Vision</option>
+            </select>
+          </div>
+        </div>
+        
+        <!-- Claude Config -->
+        <div class="provider-config" data-provider="claude">
+          <div class="form-group">
+            <label for="claudeKey">Anthropic Claude API Key</label>
+            <input type="password" id="claudeKey" placeholder="sk-ant-...">
+            <div class="help-text">Get your API key from <a href="https://console.anthropic.com/" target="_blank">console.anthropic.com</a></div>
+          </div>
+          <div class="form-group">
+            <label for="claudeModel">Model</label>
+            <select id="claudeModel">
+              <option value="claude-3-5-sonnet-20241022" selected>Claude 3.5 Sonnet</option>
+              <option value="claude-3-opus-20240229">Claude 3 Opus</option>
+              <option value="claude-3-sonnet-20240229">Claude 3 Sonnet</option>
+              <option value="claude-3-haiku-20240307">Claude 3 Haiku</option>
+            </select>
+          </div>
+        </div>
+        
+        <!-- Ollama Config -->
+        <div class="provider-config" data-provider="ollama">
+          <div class="info-box">
+            💡 Ollama runs AI models locally on your machine. Install from <a href="https://ollama.ai" target="_blank">ollama.ai</a>
+          </div>
+          <div class="form-group">
+            <label for="ollamaEndpoint">Ollama Endpoint</label>
+            <input type="text" id="ollamaEndpoint" placeholder="http://localhost:11434">
+          </div>
+          <div class="form-group">
+            <label for="ollamaModel">Model</label>
+            <input type="text" id="ollamaModel" placeholder="llama3.2">
+            <div class="help-text">Common models: llama3.2, llama3.1, mistral, phi3</div>
+          </div>
+        </div>
+        
+        <!-- FastAPI Config -->
+        <div class="provider-config" data-provider="fastapi">
+          <div class="info-box">
+            💡 Use your own custom FastAPI endpoint for text correction
+          </div>
+          <div class="form-group">
+            <label for="fastApiEndpoint">FastAPI Endpoint URL</label>
+            <input type="text" id="fastApiEndpoint" placeholder="http://localhost:8000/correct">
+            <div class="help-text">
+              <strong>Just enter base URL (e.g., https://infraai01.az.joby.aero)</strong><br>
+              • Will auto-append /v1/chat/completions<br>
+              • No API key or model required for internal endpoints
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Formatting Options -->
+      <div class="section">
+        <div class="section-title">📝 Formatting Options</div>
+        <div class="checkbox-group">
+          <input type="checkbox" id="useMarkdown">
+          <label for="useMarkdown">
+            <strong>Use Markdown Formatting</strong>
+            <div class="help-text">Enable this to format corrected text with Markdown (headers, bold, italic, lists, etc.)</div>
+          </label>
+        </div>
+      </div>
+      
+      <!-- Advanced Options -->
+      <div class="section">
+        <div class="section-title">🔧 Advanced Options</div>
+        <div class="form-group">
+          <label for="systemPrompt">Custom System Prompt (Optional)</label>
+          <textarea id="systemPrompt" placeholder="Leave empty to use default prompt..."></textarea>
+          <div class="help-text">Customize the AI's behavior with your own instructions</div>
+        </div>
+      </div>
+      
+      <!-- Save Buttons -->
+      <div class="btn-container">
+        <button class="btn btn-secondary" id="resetBtn">Reset to Defaults</button>
+        <button class="btn btn-primary" id="saveBtn">Save Settings</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="save-notification" id="saveNotification">
+    ✅ Settings saved successfully!
+  </div>
+  
+  <script src="options.js"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+# Chrome Extension Development
+*.pem
+*.crx
+.DS_Store
+
+# Node modules (if using build tools later)
+node_modules/
+package-lock.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Test/debug files
+debug.log
+test.html
+
+# Temporary files
+*.tmp
+*.temp
