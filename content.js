@@ -483,9 +483,13 @@ function setupSelectionTracking() {
 // Keyboard shortcut: Ctrl/Cmd+Shift+M to correct selected text
 document.addEventListener('keydown', async (e) => {
   // Check for Ctrl+Shift+M (Windows/Linux) or Cmd+Shift+M (Mac)
-  if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'M') {
+  // Handle both uppercase and lowercase, and check keyCode as fallback
+  const isM = e.key === 'M' || e.key === 'm' || e.code === 'KeyM' || e.keyCode === 77;
+  
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && isM) {
     e.preventDefault();
     e.stopPropagation();
+    e.stopImmediatePropagation(); // Stop Gmail from catching it
     
     console.log('🪄 TypeMagic: Keyboard shortcut triggered (Ctrl/Cmd+Shift+M)');
     
@@ -514,7 +518,7 @@ document.addEventListener('keydown', async (e) => {
       showNotification('⚠️ Please click in a text field first', 'warning');
     }
   }
-});
+}, true); // Use capture phase to intercept before Gmail's shortcuts
 
 // Initialize
 async function init() {
