@@ -8,7 +8,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log('🪄 TypeMagic: Received message:', request.action);
   
   if (request.action === 'correctText') {
-    handleTextCorrection(request.text)
+    handleTextCorrection(request.text, request.tone, request.bulletize)
       .then(correctedText => {
         console.log('🪄 TypeMagic: Correction successful');
         sendResponse({ success: true, correctedText });
@@ -22,8 +22,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 // Main function to handle text correction
-async function handleTextCorrection(text) {
-  console.log('🪄 TypeMagic: Starting text correction, text length:', text.length);
+async function handleTextCorrection(text, tone = 'preserve', bulletize = false) {
+  console.log('🪄 TypeMagic: Starting text correction, text length:', text.length, 'tone:', tone, 'bulletize:', bulletize);
   
   // Get settings from storage
   const settings = await chrome.storage.sync.get({
@@ -45,7 +45,7 @@ async function handleTextCorrection(text) {
   console.log('🪄 TypeMagic: Markdown enabled:', settings.useMarkdown);
   
   // Build the prompt
-  const prompt = buildPrompt(text, settings.useMarkdown, settings.systemPrompt);
+  const prompt = buildPrompt(text, settings.useMarkdown, settings.systemPrompt, tone, bulletize);
   
   // Call appropriate API based on provider
   switch (settings.provider) {
@@ -65,9 +65,60 @@ async function handleTextCorrection(text) {
 }
 
 // Build the correction prompt
-function buildPrompt(text, useMarkdown, customSystemPrompt) {
-  let systemPrompt = customSystemPrompt || 
-    `You are a precise text correction assistant. Your job is to fix errors while preserving the user's unique voice, personality, and writing style.
+function buildPrompt(text, useMarkdown, customSystemPrompt, tone = 'preserve', bulletize = false) {
+  // Base instructions for all tones
+  let baseInstructions = `You are a precise text correction assistant.`;
+  
+  // Tone-specific instructions
+  let toneInstructions = '';
+  
+  if (bulletize) {
+    toneInstructions = `
+
+Your task: Convert the text into clear, concise bullet points while fixing any errors.
+
+Rules:
+1. Fix spelling, grammar, and punctuation errors
+2. Convert paragraphs into bullet points
+3. Each bullet should be a complete, clear statement
+4. Preserve the original meaning and key information
+5. Keep the user's voice and terminology
+${useMarkdown ? '6. Use Markdown formatting (-, *, bold, italic) for bullets' : '6. Use simple dashes (-) or asterisks (*) for bullets'}
+
+Return ONLY the bulletized text. No explanations, no preamble.`;
+  } else if (tone === 'professional') {
+    toneInstructions = `
+
+Your task: Fix errors and elevate the text to a more professional tone while preserving the core message.
+
+Rules:
+1. Fix spelling, grammar, and punctuation errors
+2. Replace casual language with professional equivalents (e.g., "gonna" → "going to", "kinda" → "somewhat")
+3. Remove slang and overly casual expressions
+4. Maintain a respectful, business-appropriate tone
+5. Keep the original meaning and intent
+6. Do NOT change what the user is saying, only HOW they say it
+${useMarkdown ? '7. Use Markdown formatting (bold, italic, headers, lists) to enhance readability' : '7. Return plain text without special formatting'}
+
+Return ONLY the corrected text. No explanations, no preamble.`;
+  } else if (tone === 'casual') {
+    toneInstructions = `
+
+Your task: Fix errors and make the text more conversational and friendly.
+
+Rules:
+1. Fix spelling, grammar, and punctuation errors
+2. Make formal language more conversational (e.g., "utilize" → "use", "therefore" → "so")
+3. Add conversational warmth where appropriate
+4. Keep it natural and approachable
+5. Preserve the original meaning
+${useMarkdown ? '6. Use Markdown formatting (bold, italic, headers, lists) to enhance readability' : '6. Return plain text without special formatting'}
+
+Return ONLY the corrected text. No explanations, no preamble.`;
+  } else { // tone === 'preserve'
+    toneInstructions = `
+
+Your task: Fix errors while preserving the user's unique voice, personality, and writing style.
 
 Rules:
 1. Fix spelling errors (e.g., "happnionnijn" → "happening")
@@ -83,7 +134,10 @@ ${useMarkdown ? '10. Use Markdown formatting (bold, italic, headers, lists) to e
 
 CRITICAL: Make MINIMAL edits. Only fix actual errors. The goal is to correct mistakes while keeping the text sounding exactly like the user wrote it.
 
-Return ONLY the corrected text. No explanations, no comments, no preamble.`;
+Return ONLY the corrected text. No explanations, no preamble.`;
+  }
+  
+  let systemPrompt = customSystemPrompt || (baseInstructions + toneInstructions);
   
   return {
     system: systemPrompt,

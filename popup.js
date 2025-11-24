@@ -1,5 +1,8 @@
 // TypeMagic Popup Script
 
+// Track selected tone
+let selectedTone = 'preserve';
+
 // Load and display current settings
 async function loadStatus() {
   try {
@@ -70,6 +73,64 @@ async function loadStatus() {
   }
 }
 
+// Handle tone button clicks
+document.querySelectorAll('.tone-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    // Remove active class from all buttons
+    document.querySelectorAll('.tone-btn').forEach(b => b.classList.remove('active'));
+    // Add active class to clicked button
+    btn.classList.add('active');
+    // Update selected tone
+    selectedTone = btn.dataset.tone;
+    console.log('🪄 TypeMagic Popup: Tone changed to:', selectedTone);
+  });
+});
+
+// Handle bulletize button
+document.getElementById('bulletizeBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('bulletizeBtn');
+  const textarea = document.getElementById('googleDocsText');
+  const originalText = btn.textContent;
+  
+  if (textarea.value.trim().length === 0) {
+    alert('Please paste some text first!');
+    return;
+  }
+  
+  btn.textContent = '⏳ Converting...';
+  btn.disabled = true;
+  
+  try {
+    const response = await chrome.runtime.sendMessage({
+      action: 'correctText',
+      text: textarea.value,
+      tone: selectedTone,
+      bulletize: true
+    });
+    
+    if (response && response.success) {
+      await navigator.clipboard.writeText(response.correctedText);
+      textarea.value = response.correctedText;
+      textarea.select();
+      
+      btn.textContent = '✅ Converted!';
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }, 2000);
+    } else {
+      throw new Error(response?.error || 'Bulletize failed');
+    }
+  } catch (error) {
+    console.error('Error bulletizing:', error);
+    btn.textContent = '❌ Error';
+    setTimeout(() => {
+      btn.textContent = originalText;
+      btn.disabled = false;
+    }, 2000);
+  }
+});
+
 // Correct text in active tab
 document.getElementById('correctBtn').addEventListener('click', async () => {
   const btn = document.getElementById('correctBtn');
@@ -82,12 +143,13 @@ document.getElementById('correctBtn').addEventListener('click', async () => {
   try {
     // Check if Google Docs textarea has content
     if (textarea.value.trim().length > 0) {
-      console.log('🪄 TypeMagic Popup: Correcting text from Google Docs textarea');
+      console.log('🪄 TypeMagic Popup: Correcting text from textarea with tone:', selectedTone);
       
       // Send text directly to background script
       const response = await chrome.runtime.sendMessage({
         action: 'correctText',
-        text: textarea.value
+        text: textarea.value,
+        tone: selectedTone
       });
       
       if (response && response.success) {
@@ -108,10 +170,13 @@ document.getElementById('correctBtn').addEventListener('click', async () => {
       }
     } else {
       // No textarea content - use standard page correction
-      console.log('🪄 TypeMagic Popup: Triggering correction on page');
+      console.log('🪄 TypeMagic Popup: Triggering correction on page with tone:', selectedTone);
       
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-      await chrome.tabs.sendMessage(tab.id, { action: 'triggerCorrection' });
+      await chrome.tabs.sendMessage(tab.id, { 
+        action: 'triggerCorrection',
+        tone: selectedTone
+      });
       
       btn.textContent = '✅ Done!';
       setTimeout(() => {

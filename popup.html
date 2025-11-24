@@ -194,6 +194,77 @@
     #googleDocsText::placeholder {
       color: #a0aec0;
     }
+    
+    .tone-selector {
+      margin-bottom: 12px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    
+    .tone-selector label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #4a5568;
+      margin: 0;
+      white-space: nowrap;
+    }
+    
+    .tone-buttons {
+      display: flex;
+      gap: 6px;
+      flex: 1;
+    }
+    
+    .tone-btn {
+      flex: 1;
+      padding: 6px 10px;
+      border: 2px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: white;
+      color: #4a5568;
+      text-align: center;
+    }
+    
+    .tone-btn:hover {
+      border-color: #cbd5e0;
+      background: #f7fafc;
+    }
+    
+    .tone-btn.active {
+      border-color: #2d3748;
+      background: #2d3748;
+      color: white;
+    }
+    
+    .quick-actions {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    
+    .quick-action-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: white;
+      color: #4a5568;
+    }
+    
+    .quick-action-btn:hover {
+      background: #f7fafc;
+      border-color: #cbd5e0;
+      transform: translateY(-1px);
+    }
   </style>
 </head>
 <body>
@@ -224,6 +295,20 @@
       <br><br>
       Paste text here that needs formatting, spell-checking, or correcting. It will be formatted by the AI and paste-able with Ctrl+V or Command+V
     </label>
+    
+    <div class="tone-selector">
+      <label>Tone:</label>
+      <div class="tone-buttons">
+        <button class="tone-btn active" data-tone="preserve">Keep My Voice</button>
+        <button class="tone-btn" data-tone="professional">More Professional</button>
+        <button class="tone-btn" data-tone="casual">More Casual</button>
+      </div>
+    </div>
+    
+    <div class="quick-actions">
+      <button class="quick-action-btn" id="bulletizeBtn">📋 Convert to Bullets</button>
+    </div>
+    
     <textarea id="googleDocsText" placeholder="Paste your text here..."></textarea>
   </div>
   

@@ -8,18 +8,19 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'triggerCorrection') {
     // Find the currently focused element or use Google Docs editor
     const activeElement = document.activeElement;
+    const tone = request.tone || 'preserve';
     
     if (isEditableElement(activeElement)) {
       // Correct the focused element
       const dummyIcon = document.createElement('div');
-      correctText(activeElement, dummyIcon);
+      correctText(activeElement, dummyIcon, tone);
       sendResponse({ success: true });
     } else if (window.location.hostname.includes('docs.google.com')) {
       // Google Docs - correct entire document
       const editor = document.querySelector('.kix-appview-editor');
       if (editor) {
         const icon = document.querySelector('.typemagic-docs-icon') || document.createElement('div');
-        correctText(editor, icon);
+        correctText(editor, icon, tone);
         sendResponse({ success: true });
       } else {
         sendResponse({ success: false, error: 'No editor found' });
@@ -135,7 +136,7 @@ async function setTextInElement(element, text) {
 }
 
 // Send text to background script for correction
-async function correctText(element, icon) {
+async function correctText(element, icon, tone = 'preserve') {
   const originalText = getTextFromElement(element);
   
   console.log('🪄 TypeMagic: Correcting text, length:', originalText?.length);
@@ -154,10 +155,11 @@ async function correctText(element, icon) {
   
   try {
     // Send message to background script
-    console.log('🪄 TypeMagic: Sending to background script...');
+    console.log('🪄 TypeMagic: Sending to background script with tone:', tone);
     const response = await chrome.runtime.sendMessage({
       action: 'correctText',
-      text: originalText
+      text: originalText,
+      tone: tone
     });
     
     console.log('🪄 TypeMagic: Response received:', response);
@@ -478,6 +480,42 @@ function setupSelectionTracking() {
   }
 }
 
+// Keyboard shortcut: Ctrl/Cmd+Shift+T to correct selected text
+document.addEventListener('keydown', async (e) => {
+  // Check for Ctrl+Shift+T (Windows/Linux) or Cmd+Shift+T (Mac)
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'T') {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    console.log('🪄 TypeMagic: Keyboard shortcut triggered (Ctrl/Cmd+Shift+T)');
+    
+    const activeElement = document.activeElement;
+    
+    // Check if we're in an editable element
+    if (isEditableElement(activeElement)) {
+      // Check if there's selected text
+      let hasSelection = false;
+      
+      if (activeElement.tagName === 'TEXTAREA' || activeElement.tagName === 'INPUT') {
+        hasSelection = activeElement.selectionStart !== activeElement.selectionEnd;
+      } else if (activeElement.isContentEditable) {
+        const selection = window.getSelection();
+        hasSelection = selection && selection.toString().trim().length > 0;
+      }
+      
+      if (hasSelection || activeElement.value?.trim() || activeElement.innerText?.trim()) {
+        showNotification('✨ Correcting text...', 'info');
+        const dummyIcon = document.createElement('div');
+        await correctText(activeElement, dummyIcon, 'preserve');
+      } else {
+        showNotification('⚠️ No text to correct', 'warning');
+      }
+    } else {
+      showNotification('⚠️ Please click in a text field first', 'warning');
+    }
+  }
+});
+
 // Initialize
 async function init() {
   console.log('🪄 TypeMagic: Initializing on', window.location.href);
@@ -485,7 +523,7 @@ async function init() {
   // Set up selection tracking for Google Docs
   setupSelectionTracking();
   
-  console.log('🪄 TypeMagic: Initialization complete - use popup button to correct text');
+  console.log('🪄 TypeMagic: Initialization complete - use popup button or Ctrl/Cmd+Shift+T to correct text');
 }
 
 // Start when DOM is ready
