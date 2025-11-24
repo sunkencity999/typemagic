@@ -93,12 +93,14 @@ Your task: Fix errors and elevate the text to a more professional tone while pre
 
 Rules:
 1. Fix spelling, grammar, and punctuation errors
-2. Replace casual language with professional equivalents (e.g., "gonna" → "going to", "kinda" → "somewhat")
-3. Remove slang and overly casual expressions
-4. Maintain a respectful, business-appropriate tone
-5. Keep the original meaning and intent
-6. Do NOT change what the user is saying, only HOW they say it
-${useMarkdown ? '7. Use Markdown formatting (bold, italic, headers, lists) to enhance readability' : '7. Return plain text without special formatting'}
+2. PRESERVE all existing paragraph breaks (blank lines between paragraphs) - do NOT remove them
+3. If text is one long paragraph (a wall of text), ADD paragraph breaks to separate different topics/ideas
+4. Replace casual language with professional equivalents (e.g., "gonna" → "going to", "kinda" → "somewhat")
+5. Remove slang and overly casual expressions
+6. Maintain a respectful, business-appropriate tone
+7. Keep the original meaning and intent
+8. Do NOT change what the user is saying, only HOW they say it
+${useMarkdown ? '9. Use Markdown formatting (bold, italic, headers, lists) to enhance readability' : '9. Return plain text without special formatting'}
 
 Return ONLY the corrected text. No explanations, no preamble.`;
   } else if (tone === 'casual') {
@@ -108,11 +110,13 @@ Your task: Fix errors and make the text more conversational and friendly.
 
 Rules:
 1. Fix spelling, grammar, and punctuation errors
-2. Make formal language more conversational (e.g., "utilize" → "use", "therefore" → "so")
-3. Add conversational warmth where appropriate
-4. Keep it natural and approachable
-5. Preserve the original meaning
-${useMarkdown ? '6. Use Markdown formatting (bold, italic, headers, lists) to enhance readability' : '6. Return plain text without special formatting'}
+2. PRESERVE all existing paragraph breaks (blank lines between paragraphs) - do NOT remove them
+3. If text is one long paragraph (a wall of text), ADD paragraph breaks to separate different topics/ideas
+4. Make formal language more conversational (e.g., "utilize" → "use", "therefore" → "so")
+5. Add conversational warmth where appropriate
+6. Keep it natural and approachable
+7. Preserve the original meaning
+${useMarkdown ? '8. Use Markdown formatting (bold, italic, headers, lists) to enhance readability' : '8. Return plain text without special formatting'}
 
 Return ONLY the corrected text. No explanations, no preamble.`;
   } else { // tone === 'preserve'
@@ -124,15 +128,17 @@ Rules:
 1. You MUST fix ALL spelling errors (e.g., "happnionnijn" → "happening", "teh" → "the")
 2. You MUST fix ALL grammar errors (e.g., "Hell o" → "Hello", "I doesnt" → "I don't")
 3. You MUST fix ALL punctuation errors (missing commas, periods, apostrophes, etc.)
-4. PRESERVE the user's unique voice, tone, and personality
-5. PRESERVE informal language, slang, and casual expressions (e.g., keep "gonna", "kinda", "lol", "bruh")
-6. Do NOT rewrite sentences unless they contain errors
-7. Do NOT change vocabulary to sound more formal or sophisticated
-8. Do NOT add new information or change what the user is saying
-9. Do NOT homogenize the writing style - keep their individuality
-${useMarkdown ? '10. Use Markdown formatting (bold, italic, headers, lists) to enhance readability' : '10. Return plain text without special formatting'}
+4. PRESERVE all existing paragraph breaks (blank lines between paragraphs) - do NOT remove them
+5. If text is one long paragraph (a wall of text), ADD paragraph breaks to separate different topics/ideas
+6. PRESERVE the user's unique voice, tone, and personality
+7. PRESERVE informal language, slang, and casual expressions (e.g., keep "gonna", "kinda", "lol", "bruh")
+8. Do NOT rewrite sentences unless they contain errors
+9. Do NOT change vocabulary to sound more formal or sophisticated
+10. Do NOT add new information or change what the user is saying
+11. Do NOT homogenize the writing style - keep their individuality
+${useMarkdown ? '12. Use Markdown formatting (bold, italic, headers, lists) to enhance readability' : '12. Return plain text without special formatting'}
 
-IMPORTANT: Your job is to FIX ERRORS, not to rewrite. Correct every mistake, but change nothing else.
+IMPORTANT: Your job is to FIX ERRORS, not to rewrite. Correct every mistake, keep all existing paragraph breaks, but keep the voice exactly the same.
 
 Return ONLY the corrected text. No explanations, no preamble.`;
   }
