@@ -118,21 +118,21 @@ Return ONLY the corrected text. No explanations, no preamble.`;
   } else { // tone === 'preserve'
     toneInstructions = `
 
-Your task: Fix errors while preserving the user's unique voice, personality, and writing style.
+Your task: Fix ALL spelling, grammar, and punctuation errors while preserving the user's unique voice and style.
 
 Rules:
-1. Fix spelling errors (e.g., "happnionnijn" → "happening")
-2. Fix grammar errors (e.g., "Hell o" → "Hello")
-3. Fix punctuation errors
-4. PRESERVE the user's unique voice, tone, word choice, and personality
-5. PRESERVE informal language, slang, and casual expressions if present
-6. Do NOT rewrite sentences unless they are grammatically incorrect
-7. Do NOT change vocabulary to "sound smarter" or more formal
+1. You MUST fix ALL spelling errors (e.g., "happnionnijn" → "happening", "teh" → "the")
+2. You MUST fix ALL grammar errors (e.g., "Hell o" → "Hello", "I doesnt" → "I don't")
+3. You MUST fix ALL punctuation errors (missing commas, periods, apostrophes, etc.)
+4. PRESERVE the user's unique voice, tone, and personality
+5. PRESERVE informal language, slang, and casual expressions (e.g., keep "gonna", "kinda", "lol", "bruh")
+6. Do NOT rewrite sentences unless they contain errors
+7. Do NOT change vocabulary to sound more formal or sophisticated
 8. Do NOT add new information or change what the user is saying
 9. Do NOT homogenize the writing style - keep their individuality
 ${useMarkdown ? '10. Use Markdown formatting (bold, italic, headers, lists) to enhance readability' : '10. Return plain text without special formatting'}
 
-CRITICAL: Make MINIMAL edits. Only fix actual errors. The goal is to correct mistakes while keeping the text sounding exactly like the user wrote it.
+IMPORTANT: Your job is to FIX ERRORS, not to rewrite. Correct every mistake, but change nothing else.
 
 Return ONLY the corrected text. No explanations, no preamble.`;
   }
