@@ -4,7 +4,7 @@
 
 TypeMagic is a Chrome extension that automatically corrects spelling, grammar, and formatting in any text field across the web. Type freely without worrying about accuracy—let AI handle the corrections!
 
-**Instant Corrections with Keyboard Shortcut**: Press Cmd+Shift+M (Mac) or Ctrl+Shift+M (Windows/Linux) to instantly correct selected text anywhere on the web.
+**Instant Corrections with Keyboard Shortcut**: Press Cmd+Shift+M (Mac) or Ctrl+Shift+M (Windows/Linux) to instantly correct the entire field of text, or specific selected text anywhere on the web.
 
 ## Features
 
@@ -65,6 +65,7 @@ Click the TypeMagic icon in your Chrome toolbar, then click "Open Settings". Cho
 
 #### **FastAPI** (Custom Endpoint)
 - For self-hosted AI services
+- By default the extension needs only the URL of your endpoint. It does not pass model name or a password.
 - Your endpoint should accept POST requests with:
   ```json
   {
