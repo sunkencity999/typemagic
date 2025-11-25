@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "TypeMagic - AI Text Corrector",
-  "version": "1.0.0",
-  "description": "AI-powered spell checking and text formatting for any text input on the web",
+  "version": "1.1.0",
+  "description": "AI-powered text correction with instant keyboard shortcut. Press Cmd+Shift+M to fix spelling, grammar, and formatting anywhere on the web.",
   "permissions": [
     "storage",
     "activeTab",
