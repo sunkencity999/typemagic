@@ -46,6 +46,27 @@
       color: #cbd5e0;
       font-size: 15px;
       font-weight: 500;
+      margin-bottom: 16px;
+    }
+    
+    .guide-link {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 10px 24px;
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.2s ease;
+    }
+    
+    .guide-link:hover {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
     }
     
     .content {
@@ -339,8 +360,9 @@
 <body>
   <div class="container">
     <div class="header">
-      <h1>⚙️ TypeMagic Settings</h1>
+      <h1>TypeMagic Settings</h1>
       <p>Configure your AI text correction preferences</p>
+      <a href="guide.html" target="_blank" class="guide-link">View User Guide</a>
     </div>
     
     <div class="content">

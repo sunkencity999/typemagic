@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TypeMagic User Guide</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #2c3e50;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 60px 40px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .header .subtitle {
+      font-size: 1.1rem;
+      opacity: 0.95;
+    }
+
+    .content {
+      padding: 50px 40px;
+    }
+
+    .section {
+      margin-bottom: 50px;
+    }
+
+    .section:last-child {
+      margin-bottom: 0;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      color: #667eea;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      color: #764ba2;
+      margin: 30px 0 15px 0;
+    }
+
+    p {
+      margin-bottom: 15px;
+      color: #555;
+    }
+
+    .key-feature {
+      background: #f8f9fa;
+      border-left: 4px solid #667eea;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+
+    .key-feature strong {
+      color: #667eea;
+      font-size: 1.1rem;
+    }
+
+    ul, ol {
+      margin: 15px 0 15px 30px;
+    }
+
+    li {
+      margin-bottom: 10px;
+      color: #555;
+    }
+
+    .workflow {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      padding: 25px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+
+    .workflow-step {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 15px;
+    }
+
+    .workflow-step:last-child {
+      margin-bottom: 0;
+    }
+
+    .step-number {
+      background: #667eea;
+      color: white;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin-right: 15px;
+      flex-shrink: 0;
+    }
+
+    .step-content {
+      flex: 1;
+    }
+
+    .tip-box {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+
+    .tip-box strong {
+      color: #856404;
+    }
+
+    .shortcut-key {
+      background: #e9ecef;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 0.9rem;
+      border: 1px solid #dee2e6;
+      display: inline-block;
+      margin: 0 2px;
+    }
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .comparison-table th {
+      background: #f8f9fa;
+      color: #667eea;
+      font-weight: 600;
+    }
+
+    .comparison-table tr:hover {
+      background: #f8f9fa;
+    }
+
+    .footer {
+      background: #f8f9fa;
+      padding: 30px 40px;
+      text-align: center;
+      color: #666;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .footer p {
+      margin-bottom: 10px;
+    }
+
+    code {
+      background: #f8f9fa;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 0.9rem;
+      color: #e83e8c;
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        padding: 40px 20px;
+      }
+
+      .header h1 {
+        font-size: 2rem;
+      }
+
+      .content {
+        padding: 30px 20px;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      h3 {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>TypeMagic User Guide</h1>
+      <p class="subtitle">Master the art of effortless text correction and formatting</p>
+    </div>
+
+    <div class="content">
+      <!-- Getting Started -->
+      <div class="section">
+        <h2>Getting Started</h2>
+        <p>TypeMagic is designed to be intuitive and powerful. Whether you're writing emails, posts, or documents, TypeMagic helps you communicate more effectively by automatically correcting errors while preserving your unique voice.</p>
+
+        <div class="key-feature">
+          <strong>The Magic Shortcut</strong>
+          <p>Press <span class="shortcut-key">Cmd+Shift+M</span> (Mac) or <span class="shortcut-key">Ctrl+Shift+M</span> (Windows/Linux) to instantly correct text anywhere on the web. This is the fastest and most seamless way to use TypeMagic.</p>
+        </div>
+      </div>
+
+      <!-- Keyboard Shortcut Workflow -->
+      <div class="section">
+        <h2>Quick Start: Keyboard Shortcut</h2>
+        <p>The keyboard shortcut is the recommended way to use TypeMagic for maximum productivity.</p>
+
+        <div class="workflow">
+          <div class="workflow-step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <strong>Click in any text field</strong> or <strong>select text</strong> you want to correct (email compose, comment box, text area, etc.)
+            </div>
+          </div>
+          <div class="workflow-step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <strong>Press the magic shortcut:</strong> <span class="shortcut-key">Cmd+Shift+M</span> (Mac) or <span class="shortcut-key">Ctrl+Shift+M</span> (Windows/Linux)
+            </div>
+          </div>
+          <div class="workflow-step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <strong>Wait a moment</strong> while TypeMagic processes your text (usually 1-3 seconds)
+            </div>
+          </div>
+          <div class="workflow-step">
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <strong>Your text is corrected instantly</strong> in place, ready to send or continue editing
+            </div>
+          </div>
+        </div>
+
+        <div class="tip-box">
+          <strong>Pro Tip:</strong> The keyboard shortcut uses the "Keep My Voice" tone by default, which fixes errors while preserving your writing style. For other tones, use the popup interface.
+        </div>
+      </div>
+
+      <!-- Tone Adjustment -->
+      <div class="section">
+        <h2>Tone Adjustment</h2>
+        <p>TypeMagic offers three tone modes to match different contexts and audiences. Access these through the popup interface.</p>
+
+        <h3>Keep My Voice</h3>
+        <p>This is the default mode and is perfect for most situations. It corrects all spelling, grammar, and punctuation errors while preserving your unique voice, personality, and informal language.</p>
+        <ul>
+          <li>Fixes all spelling errors</li>
+          <li>Fixes all grammar and punctuation errors</li>
+          <li>Preserves informal language like "gonna", "kinda", "lol"</li>
+          <li>Maintains your personality and word choice</li>
+          <li>Adds paragraph breaks if text is one long wall</li>
+        </ul>
+
+        <h3>More Professional</h3>
+        <p>Use this mode when writing business emails, formal documents, or professional communications.</p>
+        <ul>
+          <li>Fixes all errors</li>
+          <li>Replaces casual language with professional equivalents ("gonna" becomes "going to")</li>
+          <li>Removes slang and overly casual expressions</li>
+          <li>Maintains a respectful, business-appropriate tone</li>
+          <li>Preserves your core message</li>
+        </ul>
+
+        <h3>More Casual</h3>
+        <p>Perfect for making formal text more conversational and approachable.</p>
+        <ul>
+          <li>Fixes all errors</li>
+          <li>Makes formal language more conversational ("utilize" becomes "use")</li>
+          <li>Adds warmth and approachability</li>
+          <li>Keeps text natural and friendly</li>
+          <li>Preserves your original meaning</li>
+        </ul>
+      </div>
+
+      <!-- Bulletize Feature -->
+      <div class="section">
+        <h2>Convert to Bullets</h2>
+        <p>The "Convert to Bullets" feature transforms paragraphs into clean, organized bullet points while fixing errors. This is perfect for:</p>
+        <ul>
+          <li>Meeting notes and action items</li>
+          <li>Converting prose into presentations</li>
+          <li>Creating lists from stream-of-consciousness writing</li>
+          <li>Making information more scannable and digestible</li>
+        </ul>
+
+        <p>To use this feature, paste your text into the popup textarea and click the "Convert to Bullets" button.</p>
+      </div>
+
+      <!-- Use Cases -->
+      <div class="section">
+        <h2>Best Practices & Use Cases</h2>
+
+        <h3>Email Communication</h3>
+        <p>Draft emails quickly without worrying about typos. Use "Keep My Voice" for colleagues you know well, or "More Professional" for external stakeholders.</p>
+
+        <h3>Social Media Posts</h3>
+        <p>Perfect your posts before publishing. The keyboard shortcut works in Twitter, LinkedIn, Facebook, Reddit, and more.</p>
+
+        <h3>Code Comments & Documentation</h3>
+        <p>Write better documentation and commit messages. TypeMagic works on GitHub, GitLab, Stack Overflow, and other developer platforms.</p>
+
+        <h3>Customer Support</h3>
+        <p>Respond to customers with clear, error-free messages. Use "More Professional" to maintain brand voice.</p>
+
+        <h3>Content Creation</h3>
+        <p>Draft blog posts, articles, and long-form content with confidence. Use the bulletize feature to organize ideas.</p>
+
+        <h3>Quick Notes & Messages</h3>
+        <p>Clean up stream-of-consciousness writing in Slack, Discord, or messaging apps.</p>
+      </div>
+
+      <!-- Workflow Comparison -->
+      <div class="section">
+        <h2>Choosing Your Workflow</h2>
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Workflow</th>
+              <th>Best For</th>
+              <th>Tone Options</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Keyboard Shortcut</strong><br><span class="shortcut-key">Cmd+Shift+M</span></td>
+              <td>Quick corrections anywhere, maximum speed and convenience</td>
+              <td>Keep My Voice (default)</td>
+            </tr>
+            <tr>
+              <td><strong>Popup Interface</strong><br>(Click extension icon)</td>
+              <td>Google Docs, choosing specific tones, bulletize feature</td>
+              <td>All three tones + Bulletize</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Google Docs Workflow -->
+      <div class="section">
+        <h2>Google Docs Workflow</h2>
+        <p>Due to browser security restrictions, Google Docs requires a copy-paste workflow:</p>
+
+        <div class="workflow">
+          <div class="workflow-step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <strong>Select and copy</strong> your text in Google Docs (<span class="shortcut-key">Cmd+C</span> or <span class="shortcut-key">Ctrl+C</span>)
+            </div>
+          </div>
+          <div class="workflow-step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <strong>Click the TypeMagic icon</strong> in your Chrome toolbar
+            </div>
+          </div>
+          <div class="workflow-step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <strong>Paste</strong> into the textarea at the top of the popup
+            </div>
+          </div>
+          <div class="workflow-step">
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <strong>Select your tone</strong> and click "Correct Text"
+            </div>
+          </div>
+          <div class="workflow-step">
+            <div class="step-number">5</div>
+            <div class="step-content">
+              <strong>Paste back</strong> into Google Docs (<span class="shortcut-key">Cmd+V</span> or <span class="shortcut-key">Ctrl+V</span>)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tips for Best Results -->
+      <div class="section">
+        <h2>Tips for Best Results</h2>
+        <ul>
+          <li><strong>Text Length:</strong> TypeMagic works best with at least a few sentences. Very short text (1-2 words) may not benefit from AI correction.</li>
+          <li><strong>Paragraph Structure:</strong> TypeMagic automatically preserves and improves paragraph structure. Write freely, even in one long paragraph, and let TypeMagic organize it.</li>
+          <li><strong>Review Output:</strong> AI corrections are usually excellent but not always perfect. Always review before sending important communications.</li>
+          <li><strong>Partial Corrections:</strong> Select only the text you want to correct before using the keyboard shortcut. Great for fixing specific sections.</li>
+          <li><strong>Use Markdown:</strong> Enable "Use Markdown Formatting" in settings for enhanced formatting with headers, bold, italic, and lists.</li>
+          <li><strong>Custom Prompts:</strong> Advanced users can create custom system prompts in settings to control exactly how TypeMagic corrects text.</li>
+        </ul>
+      </div>
+
+      <!-- Privacy & Performance -->
+      <div class="section">
+        <h2>Privacy & Performance</h2>
+
+        <h3>Privacy First</h3>
+        <p>TypeMagic is designed with privacy in mind:</p>
+        <ul>
+          <li>API keys are stored locally on your machine</li>
+          <li>No tracking, analytics, or data collection</li>
+          <li>Text is only sent to your chosen AI provider</li>
+          <li>Use Ollama for 100% local processing with complete privacy</li>
+        </ul>
+
+        <h3>Performance Tips</h3>
+        <ul>
+          <li>For fastest results, use <code>gpt-4o-mini</code> (OpenAI) or <code>llama3.2</code> (Ollama)</li>
+          <li>Larger models provide better quality but take longer</li>
+          <li>Very long texts (5000+ words) may take 10-15 seconds</li>
+          <li>Check your AI provider's rate limits if corrections slow down</li>
+        </ul>
+      </div>
+
+      <!-- Troubleshooting -->
+      <div class="section">
+        <h2>Troubleshooting</h2>
+
+        <h3>Keyboard Shortcut Not Working</h3>
+        <ul>
+          <li>Make sure you're clicking in a text field first</li>
+          <li>Reload the page after installing or updating the extension</li>
+          <li>Check that you're pressing the correct combination: <span class="shortcut-key">Cmd+Shift+M</span> or <span class="shortcut-key">Ctrl+Shift+M</span></li>
+        </ul>
+
+        <h3>Paragraphs Disappearing</h3>
+        <ul>
+          <li>This should be fixed in v1.1.0+. Make sure you're on the latest version.</li>
+          <li>If using contentEditable fields (like Gmail compose), the extension now properly converts newlines to HTML breaks</li>
+        </ul>
+
+        <h3>Corrections Not Applying</h3>
+        <ul>
+          <li>Test your connection using the "Test Connection" button in the popup</li>
+          <li>Verify your API key is correct in settings</li>
+          <li>Check your AI provider's dashboard for rate limits or billing issues</li>
+          <li>For Ollama: Ensure Ollama is running with <code>ollama serve</code></li>
+        </ul>
+
+        <h3>Tone Not Working as Expected</h3>
+        <ul>
+          <li>"Keep My Voice" should fix errors while maintaining your style</li>
+          <li>"More Professional" will change casual language to formal</li>
+          <li>"More Casual" will make formal text more conversational</li>
+          <li>Try using the "Custom System Prompt" feature for fine-tuned control</li>
+        </ul>
+      </div>
+
+      <!-- Advanced Features -->
+      <div class="section">
+        <h2>Advanced Features</h2>
+
+        <h3>Custom System Prompts</h3>
+        <p>Power users can create custom instructions for the AI in the settings page. Examples:</p>
+        <ul>
+          <li>"Only fix spelling, leave grammar unchanged"</li>
+          <li>"Use British English spelling"</li>
+          <li>"Add technical terminology for software development"</li>
+          <li>"Write in the style of [specific author or publication]"</li>
+        </ul>
+
+        <h3>Multiple AI Providers</h3>
+        <p>TypeMagic supports multiple AI providers for flexibility:</p>
+        <ul>
+          <li><strong>OpenAI:</strong> Best quality, fast, reliable (recommended)</li>
+          <li><strong>Google Gemini:</strong> Generous free tier</li>
+          <li><strong>Anthropic Claude:</strong> Excellent for nuanced corrections</li>
+          <li><strong>Ollama:</strong> 100% local, free, private</li>
+          <li><strong>Custom FastAPI:</strong> For self-hosted solutions</li>
+        </ul>
+
+        <h3>Markdown Formatting</h3>
+        <p>Enable this in settings to have TypeMagic format your text with Markdown syntax, perfect for platforms that support it (GitHub, Notion, Slack, etc.)</p>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p><strong>TypeMagic v1.1.0</strong></p>
+      <p>Developed by Christopher Bradford</p>
+      <p>For support, visit the GitHub repository or contact admin@robotbirdservices.com</p>
+    </div>
+  </div>
+</body>
+</html>

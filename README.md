@@ -1,18 +1,23 @@
-# TypeMagic ✨
+# TypeMagic
 
 **AI-Powered Text Correction & Formatting for Chrome**
 
 TypeMagic is a Chrome extension that automatically corrects spelling, grammar, and formatting in any text field across the web. Type freely without worrying about accuracy—let AI handle the corrections!
 
+**Instant Corrections with Keyboard Shortcut**: Press Cmd+Shift+M (Mac) or Ctrl+Shift+M (Windows/Linux) to instantly correct selected text anywhere on the web.
+
 ## Features
 
-- 🎯 **Universal Compatibility**: Works on any webpage with text inputs (email, docs, social media, etc.)
-- 🤖 **Multiple AI Providers**: Support for OpenAI, Google Gemini, Anthropic Claude, Ollama, and custom FastAPI endpoints
-- 📝 **Smart Formatting**: Optionally use Markdown to format your text with headers, lists, bold, italic, etc.
-- ⚡ **One-Click Correction**: Click the extension icon and press "Correct Text" to apply corrections
-- 📋 **Google Docs Support**: Manual copy/paste workflow for Google Docs compatibility
-- 🔒 **Privacy-Focused**: Your API keys are stored locally; text is only sent to your chosen AI provider
-- 🎨 **Clean UI**: Beautiful popup interface with gradient design
+- **Keyboard Shortcut**: Press Cmd+Shift+M (Mac) or Ctrl+Shift+M (Windows/Linux) for instant corrections
+- **Tone Adjustment**: Choose between "Keep My Voice", "More Professional", or "More Casual"
+- **Bulletize**: Convert paragraphs into clean, organized bullet points
+- **Universal Compatibility**: Works on any webpage with text inputs (email, docs, social media, etc.)
+- **Multiple AI Providers**: Support for OpenAI, Google Gemini, Anthropic Claude, Ollama, and custom FastAPI endpoints
+- **Smart Formatting**: Optionally use Markdown to format your text with headers, lists, bold, italic, etc.
+- **One-Click Correction**: Click the extension icon and press "Correct Text" to apply corrections
+- **Google Docs Support**: Manual copy/paste workflow for Google Docs compatibility
+- **Privacy-Focused**: Your API keys are stored locally; text is only sent to your chosen AI provider
+- **Clean UI**: Beautiful popup interface with gradient design
 
 ## Installation
 
@@ -92,50 +97,63 @@ Create your own instructions for the AI by editing the "Custom System Prompt" fi
 
 ## Usage
 
-### For Google Docs
+### Quick Keyboard Shortcut (Recommended)
+
+1. **Click in any text field** or **select text** you want to correct
+2. **Press Cmd+Shift+M** (Mac) or **Ctrl+Shift+M** (Windows/Linux)
+3. Your text is instantly corrected in place!
+
+This works everywhere: Gmail, Twitter, LinkedIn, Reddit, forums, text fields, and more.
+
+### Using the Popup
+
+#### For Google Docs
 
 1. **Select and copy** the text you want to correct in Google Docs (Cmd/Ctrl+C)
 2. **Click the TypeMagic extension icon** in your Chrome toolbar
 3. **Paste the text** into the textarea at the top of the popup
-4. **Click "✨ Correct Text"**
-5. The corrected text is automatically copied to your clipboard
-6. **Paste back** into Google Docs (Cmd/Ctrl+V)
+4. **Select your desired tone** (Keep My Voice, More Professional, or More Casual)
+5. **Click "Correct Text"** or **"Convert to Bullets"**
+6. The corrected text is automatically copied to your clipboard
+7. **Paste back** into Google Docs (Cmd/Ctrl+V)
 
-### For Other Sites (Text Fields, Email, Social Media)
+#### For Other Sites (Text Fields, Email, Social Media)
 
 1. **Click in any text field** (textarea, input, contentEditable element)
 2. **Click the TypeMagic extension icon** in your toolbar
-3. **Click "✨ Correct Text"**
-4. Your text is automatically corrected in place!
+3. **Select your desired tone**
+4. **Click "Correct Text"**
+5. Your text is automatically corrected in place!
 
 ### Tips for Best Results
 
-- ✅ Works best with at least a few sentences of text
-- ✅ Great for quickly drafting emails, posts, and messages
-- ✅ For partial corrections: Select only the text you want to fix before clicking
-- ⚠️ Review AI suggestions—they're usually excellent but not always perfect
-- 📝 Google Docs requires the manual copy/paste workflow due to browser security restrictions
+- Works best with at least a few sentences of text
+- Great for quickly drafting emails, posts, and messages
+- For partial corrections: Select only the text you want to fix before using the keyboard shortcut
+- Review AI suggestions—they're usually excellent but not always perfect
+- Google Docs requires the manual copy/paste workflow due to browser security restrictions
+- Use the keyboard shortcut (Cmd+Shift+M) for the fastest workflow
 
 ## Supported Websites
 
 TypeMagic works on virtually any website with text inputs:
 
-- ✉️ **Email**: Gmail, Outlook, Yahoo Mail
-- 📄 **Documents**: Google Docs (via copy/paste), Notion, Confluence
-- 💬 **Social Media**: Twitter/X, Facebook, LinkedIn, Reddit
-- 💻 **Development**: GitHub, Stack Overflow, GitLab
-- 🎓 **Education**: Canvas, Blackboard, Moodle
-- 📝 **Note Taking**: Evernote, OneNote, Bear
-- 🌐 **Any webpage** with textarea, input, or contentEditable fields
+- **Email**: Gmail, Outlook, Yahoo Mail
+- **Documents**: Google Docs (via copy/paste), Notion, Confluence
+- **Social Media**: Twitter/X, Facebook, LinkedIn, Reddit
+- **Development**: GitHub, Stack Overflow, GitLab
+- **Education**: Canvas, Blackboard, Moodle
+- **Note Taking**: Evernote, OneNote, Bear
+- **Any webpage** with textarea, input, or contentEditable fields
 
 **Note:** Google Docs uses a proprietary editor that requires the copy/paste workflow described above.
 
 ## Privacy & Security
 
-- 🔐 **API keys stored locally**: Your credentials never leave your machine except to call the AI provider
-- 🚫 **No tracking**: TypeMagic doesn't collect any analytics or usage data
-- 🎯 **Minimal permissions**: Only requests necessary permissions for functionality
-- 📡 **Your choice of provider**: Use local AI (Ollama) for complete privacy
+- **API keys stored locally**: Your credentials never leave your machine except to call the AI provider
+- **No tracking**: TypeMagic doesn't collect any analytics or usage data
+- **Minimal permissions**: Only requests necessary permissions for functionality
+- **Your choice of provider**: Use local AI (Ollama) for complete privacy
 
 ## Troubleshooting
 
@@ -225,9 +243,7 @@ Potential features for future versions:
 - [ ] Undo/redo functionality
 - [ ] Side-by-side comparison view
 - [ ] Custom correction rules/dictionary
-- [ ] Keyboard shortcuts for quick corrections
 - [ ] Language detection and translation
-- [ ] Tone adjustment (formal/casual/professional)
 - [ ] Browser action badge showing correction count
 - [ ] Firefox and Edge support
 
@@ -252,8 +268,8 @@ For issues, questions, or suggestions:
 
 **Christopher Bradford**  
 Email: admin@robotbirdservices.com  
-Version: 1.0.0
+Version: 1.1.0
 
 ---
 
-*Type fast, correct faster!* ✨
+*Type fast, correct faster with TypeMagic.*
