@@ -10,7 +10,7 @@ TypeMagic is a Chrome extension that automatically corrects spelling, grammar, a
 
 - **Keyboard Shortcut**: Press Cmd+Shift+M (Mac) or Ctrl+Shift+M (Windows/Linux) for instant corrections
 - **Tone Adjustment**: Choose between "Keep My Voice", "More Professional", or "More Casual"
-- **Bulletize**: Convert paragraphs into clean, organized bullet points
+- **Quick Actions**: Convert to bullet points or create concise summaries with one click
 - **Universal Compatibility**: Works on any webpage with text inputs (email, docs, social media, etc.)
 - **Multiple AI Providers**: Support for OpenAI, Google Gemini, Anthropic Claude, Ollama, and custom FastAPI endpoints
 - **Smart Formatting**: Optionally use Markdown to format your text with headers, lists, bold, italic, etc.
@@ -114,7 +114,7 @@ This works everywhere: Gmail, Twitter, LinkedIn, Reddit, forums, text fields, an
 2. **Click the TypeMagic extension icon** in your Chrome toolbar
 3. **Paste the text** into the textarea at the top of the popup
 4. **Select your desired tone** (Keep My Voice, More Professional, or More Casual)
-5. **Click "Correct Text"** or **"Convert to Bullets"**
+5. **Click "Correct Text"**, **"Convert to Bullets"**, or **"Summarize"**
 6. The corrected text is automatically copied to your clipboard
 7. **Paste back** into Google Docs (Cmd/Ctrl+V)
 
