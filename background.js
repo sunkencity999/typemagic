@@ -8,7 +8,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log('🪄 TypeMagic: Received message:', request.action);
   
   if (request.action === 'correctText') {
-    handleTextCorrection(request.text, request.tone, request.bulletize)
+    handleTextCorrection(request.text, request.tone, request.bulletize, request.summarize)
       .then(correctedText => {
         console.log('🪄 TypeMagic: Correction successful');
         sendResponse({ success: true, correctedText });
@@ -22,8 +22,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 // Main function to handle text correction
-async function handleTextCorrection(text, tone = 'preserve', bulletize = false) {
-  console.log('🪄 TypeMagic: Starting text correction, text length:', text.length, 'tone:', tone, 'bulletize:', bulletize);
+async function handleTextCorrection(text, tone = 'preserve', bulletize = false, summarize = false) {
+  console.log('🪄 TypeMagic: Starting text correction, text length:', text.length, 'tone:', tone, 'bulletize:', bulletize, 'summarize:', summarize);
   
   // Get settings from storage
   const settings = await chrome.storage.sync.get({
@@ -45,7 +45,7 @@ async function handleTextCorrection(text, tone = 'preserve', bulletize = false) 
   console.log('🪄 TypeMagic: Markdown enabled:', settings.useMarkdown);
   
   // Build the prompt
-  const prompt = buildPrompt(text, settings.useMarkdown, settings.systemPrompt, tone, bulletize);
+  const prompt = buildPrompt(text, settings.useMarkdown, settings.systemPrompt, tone, bulletize, summarize);
   
   // Call appropriate API based on provider
   switch (settings.provider) {
@@ -65,14 +65,31 @@ async function handleTextCorrection(text, tone = 'preserve', bulletize = false) 
 }
 
 // Build the correction prompt
-function buildPrompt(text, useMarkdown, customSystemPrompt, tone = 'preserve', bulletize = false) {
+function buildPrompt(text, useMarkdown, customSystemPrompt, tone = 'preserve', bulletize = false, summarize = false) {
   // Base instructions for all tones
   let baseInstructions = `You are a precise text correction assistant.`;
   
   // Tone-specific instructions
   let toneInstructions = '';
   
-  if (bulletize) {
+  if (summarize) {
+    toneInstructions = `
+
+Your task: Create a clear, concise summary of the text while fixing any errors.
+
+Rules:
+1. Fix spelling, grammar, and punctuation errors in your summary
+2. Capture the main points and key information
+3. Keep the summary between 2-5 sentences (or 20-30% of original length for very long texts)
+4. Preserve the original meaning and intent
+5. Use clear, professional language
+6. Organize information logically
+${useMarkdown ? '7. Use Markdown formatting (bold, italic) to emphasize key points if helpful' : '7. Return plain text without special formatting'}
+
+IMPORTANT: Create a flowing summary, not bullet points. Write it as a coherent paragraph or two.
+
+Return ONLY the summary. No explanations, no preamble.`;
+  } else if (bulletize) {
     toneInstructions = `
 
 Your task: Convert the text into clear, concise bullet points while fixing any errors.

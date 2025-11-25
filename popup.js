@@ -139,6 +139,57 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   });
 
+  // Handle summarize button
+  const summarizeBtn = document.getElementById('summarizeBtn');
+  if (!summarizeBtn) {
+    console.error('🪄 TypeMagic Popup: summarizeBtn not found!');
+    return;
+  }
+  
+  summarizeBtn.addEventListener('click', async () => {
+    const btn = document.getElementById('summarizeBtn');
+    const textarea = document.getElementById('googleDocsText');
+    const originalText = btn.textContent;
+    
+    if (textarea.value.trim().length === 0) {
+      alert('Please paste some text first!');
+      return;
+    }
+    
+    btn.textContent = '⏳ Summarizing...';
+    btn.disabled = true;
+    
+    try {
+      const response = await chrome.runtime.sendMessage({
+        action: 'correctText',
+        text: textarea.value,
+        tone: selectedTone,
+        summarize: true
+      });
+      
+      if (response && response.success) {
+        await navigator.clipboard.writeText(response.correctedText);
+        textarea.value = response.correctedText;
+        textarea.select();
+        
+        btn.textContent = '✅ Summarized!';
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.disabled = false;
+        }, 2000);
+      } else {
+        throw new Error(response?.error || 'Summarize failed');
+      }
+    } catch (error) {
+      console.error('Error summarizing:', error);
+      btn.textContent = '❌ Error';
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }, 2000);
+    }
+  });
+
   // Correct text in active tab
   document.getElementById('correctBtn').addEventListener('click', async () => {
     const btn = document.getElementById('correctBtn');
