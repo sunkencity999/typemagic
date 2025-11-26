@@ -366,25 +366,48 @@ async function callOllama(prompt, endpoint, model) {
     throw new Error('Ollama endpoint not configured');
   }
   
-  const response = await fetch(`${endpoint}/api/generate`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      model: model,
-      prompt: `${prompt.system}\n\nText to correct:\n${prompt.user}`,
-      stream: false,
-      options: {
-        temperature: 0.3
+  console.log('🪄 TypeMagic: Calling Ollama at', endpoint, 'with model', model);
+  
+  try {
+    const response = await fetch(`${endpoint}/api/generate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: model,
+        prompt: `${prompt.system}\n\nText to correct:\n${prompt.user}`,
+        stream: false,
+        options: {
+          temperature: 0.3
+        }
+      })
+    });
+    
+    console.log('🪄 TypeMagic: Ollama response status:', response.status);
+    
+    if (!response.ok) {
+      let errorMsg = `Ollama request failed with status ${response.status}`;
+      try {
+        const errorData = await response.json();
+        console.error('🪄 TypeMagic: Ollama error details:', errorData);
+        errorMsg = errorData.error || errorData.message || errorMsg;
+      } catch (e) {
+        const errorText = await response.text();
+        console.error('🪄 TypeMagic: Ollama error text:', errorText);
+        if (errorText) errorMsg += `: ${errorText}`;
       }
-    })
-  });
-  
-  if (!response.ok) {
-    throw new Error('Ollama request failed');
+      throw new Error(errorMsg);
+    }
+    
+    const data = await response.json();
+    console.log('🪄 TypeMagic: Ollama response received, length:', data.response?.length);
+    return data.response.trim();
+  } catch (error) {
+    console.error('🪄 TypeMagic: Ollama error:', error);
+    if (error.message.includes('fetch')) {
+      throw new Error(`Cannot connect to Ollama at ${endpoint}. Make sure Ollama is running with 'ollama serve'`);
+    }
+    throw error;
   }
-  
-  const data = await response.json();
-  return data.response.trim();
 }
