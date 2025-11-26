@@ -182,6 +182,11 @@ async function correctText(element, icon, tone = 'preserve') {
   icon.classList.add(PROCESSING_CLASS);
   
   try {
+    // Check if extension context is valid
+    if (!chrome.runtime || !chrome.runtime.id) {
+      throw new Error('Extension context invalidated. Please reload the page.');
+    }
+    
     // Send message to background script
     console.log('🪄 TypeMagic: Sending to background script with tone:', tone);
     const response = await chrome.runtime.sendMessage({
@@ -550,6 +555,12 @@ document.addEventListener('keydown', async (e) => {
 
 // Initialize
 async function init() {
+  // Verify extension context is valid
+  if (!chrome.runtime || !chrome.runtime.id) {
+    console.error('🪄 TypeMagic: Extension context invalidated, cannot initialize');
+    return;
+  }
+  
   console.log('🪄 TypeMagic: Initializing on', window.location.href);
   
   // Set up selection tracking for Google Docs
