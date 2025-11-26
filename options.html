@@ -496,7 +496,25 @@
         <!-- Ollama Config -->
         <div class="provider-config" data-provider="ollama">
           <div class="info-box">
-            💡 Ollama runs AI models locally on your machine. Install from <a href="https://ollama.ai" target="_blank">ollama.ai</a>
+            💡 Ollama runs AI models locally on your machine. Install from <a href="https://ollama.ai" target="_blank">ollama.ai</a>.
+            <br><br>
+            For TypeMagic to access Ollama from Chrome, you must start Ollama with the environment variable <code>OLLAMA_ORIGINS</code> set, for example:
+            <br>
+            <code>OLLAMA_ORIGINS="chrome-extension://*" ollama serve</code>
+            <br><br>
+            To make this setting permanent on your machine:
+            <br>
+            <strong>macOS (zsh)</strong>: add this line to <code>~/.zshrc</code> and restart your terminal:
+            <br>
+            <code>export OLLAMA_ORIGINS="chrome-extension://*"</code>
+            <br><br>
+            <strong>Linux (bash)</strong>: add this line to <code>~/.bashrc</code> or <code>~/.profile</code>:
+            <br>
+            <code>export OLLAMA_ORIGINS="chrome-extension://*"</code>
+            <br><br>
+            <strong>Windows (PowerShell)</strong>: set a persistent user environment variable, then restart your terminal:
+            <br>
+            <code>[System.Environment]::SetEnvironmentVariable("OLLAMA_ORIGINS", "chrome-extension://*", "User")</code>
           </div>
           <div class="form-group">
             <label for="ollamaEndpoint">Ollama Endpoint</label>
