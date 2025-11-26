@@ -389,13 +389,18 @@ async function callOllama(prompt, endpoint, model) {
     if (!response.ok) {
       let errorMsg = `Ollama request failed with status ${response.status}`;
       try {
-        const errorData = await response.json();
-        console.error('🪄 TypeMagic: Ollama error details:', errorData);
-        errorMsg = errorData.error || errorData.message || errorMsg;
-      } catch (e) {
         const errorText = await response.text();
-        console.error('🪄 TypeMagic: Ollama error text:', errorText);
-        if (errorText) errorMsg += `: ${errorText}`;
+        console.error('🪄 TypeMagic: Ollama error response:', errorText);
+        // Try to parse as JSON to get structured error
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMsg = errorData.error || errorData.message || errorMsg;
+        } catch (e) {
+          // If not JSON, use the text directly
+          if (errorText) errorMsg += `: ${errorText}`;
+        }
+      } catch (e) {
+        console.error('🪄 TypeMagic: Could not read error response:', e);
       }
       throw new Error(errorMsg);
     }
