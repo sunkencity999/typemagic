@@ -5,6 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TypeMagic</title>
   <style>
+    /* Font Faces */
+    @font-face {
+        font-family: 'Calendas Plus';
+        src: url('fonts/calendas_plus_regular.woff2') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+    }
+    @font-face {
+        font-family: 'Calendas Plus';
+        src: url('fonts/calendas_plus_bold.woff2') format('woff2');
+        font-weight: bold;
+        font-style: normal;
+    }
+
+    /* Variables */
+    :root {
+        --primary-color: #1f2937; /* Charcoal */
+        --secondary-color: #374151; /* Lighter Charcoal */
+        --accent-color: #e07a5f; /* Burnt Sienna */
+        --text-color: #111827;
+        --bg-color: #ffffff;
+        --font-main: 'Calendas Plus', serif;
+        --font-ui: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -19,9 +44,9 @@
     body {
       width: 420px;
       padding: 24px;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ed 100%);
-      color: #2d3748;
+      font-family: var(--font-ui);
+      background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+      color: var(--text-color);
       border-radius: 16px;
       overflow: hidden;
     }
@@ -32,22 +57,23 @@
     }
     
     .logo {
-      font-size: 52px;
-      margin-bottom: 12px;
+      font-size: 42px;
+      margin-bottom: 8px;
       filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
     }
     
     h1 {
-      font-size: 26px;
+      font-family: var(--font-main);
+      font-size: 32px;
       font-weight: 700;
-      margin-bottom: 6px;
-      color: #1a202c;
+      margin-bottom: 4px;
+      color: var(--primary-color);
       letter-spacing: -0.5px;
     }
     
     .subtitle {
       font-size: 14px;
-      color: #718096;
+      color: #6b7280;
       font-weight: 500;
     }
     
@@ -56,7 +82,7 @@
       padding: 16px;
       border-radius: 12px;
       margin-bottom: 18px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
       border: 1px solid rgba(0, 0, 0, 0.05);
     }
     
@@ -73,86 +99,86 @@
     }
     
     .status-label {
-      color: #4a5568;
+      color: var(--secondary-color);
       font-weight: 500;
     }
     
     .status-value {
       font-weight: 600;
-      padding: 5px 12px;
-      background: #edf2f7;
+      padding: 4px 10px;
+      background: #f3f4f6;
       border-radius: 6px;
-      color: #2d3748;
+      color: var(--primary-color);
       font-size: 12px;
     }
     
     .status-value.active {
-      background: #c6f6d5;
-      color: #22543d;
+      background: #d1fae5;
+      color: #065f46;
     }
     
     .status-value.inactive {
-      background: #fed7d7;
-      color: #742a2a;
+      background: #fee2e2;
+      color: #991b1b;
     }
     
     .btn {
       width: 100%;
-      padding: 14px;
+      padding: 12px;
       border: none;
-      border-radius: 10px;
+      border-radius: 8px;
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
       margin-bottom: 10px;
-      font-family: inherit;
+      font-family: var(--font-ui);
       letter-spacing: 0.2px;
     }
     
-    .btn-primary {
-      background: white;
-      color: #2d3748;
-      border: 1px solid #e2e8f0;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-    }
-    
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-      background: #ffffff;
-    }
-    
-    .btn-secondary {
-      background: #f7fafc;
-      color: #4a5568;
-      border: 1px solid #e2e8f0;
-    }
-    
-    .btn-secondary:hover {
-      background: white;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    }
-    
+    /* Primary Button (Action) */
     .btn-accent {
-      background: #2d3748;
+      background: var(--primary-color);
       color: white;
-      font-size: 15px;
-      font-weight: 700;
-      box-shadow: 0 2px 8px rgba(45, 55, 72, 0.2);
+      box-shadow: 0 2px 4px rgba(31, 41, 55, 0.2);
     }
     
     .btn-accent:hover {
-      background: #1a202c;
+      background: var(--secondary-color);
       transform: translateY(-1px);
-      box-shadow: 0 4px 16px rgba(45, 55, 72, 0.3);
+      box-shadow: 0 4px 8px rgba(31, 41, 55, 0.3);
+    }
+
+    /* Secondary Button (Settings) */
+    .btn-primary {
+      background: white;
+      color: var(--primary-color);
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .btn-primary:hover {
+      border-color: var(--accent-color);
+      color: var(--accent-color);
+      transform: translateY(-1px);
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      color: #6b7280;
+      border: 1px solid transparent;
+    }
+    
+    .btn-secondary:hover {
+      color: var(--primary-color);
+      background: #f3f4f6;
     }
     
     .footer {
       text-align: center;
       margin-top: 18px;
       font-size: 11px;
-      color: #718096;
+      color: #9ca3af;
       font-weight: 500;
     }
     
@@ -161,29 +187,33 @@
       padding: 16px;
       border-radius: 12px;
       margin-bottom: 18px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
       border: 1px solid rgba(0, 0, 0, 0.05);
     }
     
     .google-docs-label {
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 500;
       margin-bottom: 10px;
       display: block;
       line-height: 1.5;
-      color: #4a5568;
+      color: var(--secondary-color);
+    }
+    
+    .google-docs-label strong {
+        color: var(--accent-color);
     }
     
     #googleDocsText {
       width: 100%;
       min-height: 90px;
       padding: 12px;
-      border: 2px solid #e2e8f0;
+      border: 1px solid #e5e7eb;
       border-radius: 8px;
       font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Mono', monospace;
       font-size: 13px;
-      background: #f7fafc;
-      color: #2d3748;
+      background: #f9fafb;
+      color: var(--text-color);
       resize: vertical;
       outline: none;
       transition: all 0.2s ease;
@@ -191,13 +221,13 @@
     }
     
     #googleDocsText:focus {
-      border-color: #4299e1;
-      box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(224, 122, 95, 0.1);
       background: white;
     }
     
     #googleDocsText::placeholder {
-      color: #a0aec0;
+      color: #9ca3af;
     }
     
     .tone-selector {
@@ -210,7 +240,7 @@
     .tone-selector label {
       font-size: 12px;
       font-weight: 600;
-      color: #4a5568;
+      color: var(--secondary-color);
       margin: 0;
       white-space: nowrap;
     }
@@ -224,25 +254,25 @@
     .tone-btn {
       flex: 1;
       padding: 6px 10px;
-      border: 2px solid #e2e8f0;
+      border: 1px solid #e5e7eb;
       border-radius: 6px;
       font-size: 11px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
       background: white;
-      color: #4a5568;
+      color: #6b7280;
       text-align: center;
     }
     
     .tone-btn:hover {
-      border-color: #cbd5e0;
-      background: #f7fafc;
+      border-color: var(--accent-color);
+      color: var(--accent-color);
     }
     
     .tone-btn.active {
-      border-color: #2d3748;
-      background: #2d3748;
+      border-color: var(--primary-color);
+      background: var(--primary-color);
       color: white;
     }
     
@@ -255,19 +285,20 @@
     .quick-action-btn {
       flex: 1;
       padding: 8px 12px;
-      border: 1px solid #e2e8f0;
+      border: 1px solid #e5e7eb;
       border-radius: 8px;
       font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
       background: white;
-      color: #4a5568;
+      color: #6b7280;
     }
     
     .quick-action-btn:hover {
-      background: #f7fafc;
-      border-color: #cbd5e0;
+      background: #f9fafb;
+      border-color: var(--accent-color);
+      color: var(--accent-color);
       transform: translateY(-1px);
     }
   </style>

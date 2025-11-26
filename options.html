@@ -5,6 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TypeMagic Settings</title>
   <style>
+    /* Font Faces */
+    @font-face {
+        font-family: 'Calendas Plus';
+        src: url('fonts/calendas_plus_regular.woff2') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+    }
+    @font-face {
+        font-family: 'Calendas Plus';
+        src: url('fonts/calendas_plus_bold.woff2') format('woff2');
+        font-weight: bold;
+        font-style: normal;
+    }
+
+    /* Variables */
+    :root {
+        --primary-color: #1f2937; /* Charcoal */
+        --secondary-color: #374151; /* Lighter Charcoal */
+        --accent-color: #e07a5f; /* Burnt Sienna */
+        --text-color: #111827;
+        --bg-color: #ffffff;
+        --font-main: 'Calendas Plus', serif;
+        --font-ui: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -12,10 +37,11 @@
     }
     
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ed 100%);
+      font-family: var(--font-ui);
+      background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
       min-height: 100vh;
       padding: 40px 20px;
+      color: var(--text-color);
     }
     
     .container {
@@ -23,28 +49,29 @@
       margin: 0 auto;
       background: white;
       border-radius: 20px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
       overflow: hidden;
       border: 1px solid rgba(0, 0, 0, 0.05);
     }
     
     .header {
-      background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+      background: var(--primary-color);
       color: white;
       padding: 36px;
       text-align: center;
     }
     
     .header h1 {
-      font-size: 34px;
+      font-family: var(--font-main);
+      font-size: 38px;
       margin-bottom: 10px;
       font-weight: 700;
       letter-spacing: -0.5px;
     }
     
     .header p {
-      color: #cbd5e0;
-      font-size: 15px;
+      color: #e5e7eb;
+      font-size: 16px;
       font-weight: 500;
       margin-bottom: 16px;
     }
@@ -53,7 +80,7 @@
       display: inline-block;
       margin-top: 8px;
       padding: 10px 24px;
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.1);
       color: white;
       text-decoration: none;
       border-radius: 8px;
@@ -64,7 +91,7 @@
     }
     
     .guide-link:hover {
-      background: rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.2);
       border-color: rgba(255, 255, 255, 0.3);
       transform: translateY(-1px);
     }
@@ -78,10 +105,11 @@
     }
     
     .section-title {
-      font-size: 19px;
+      font-family: var(--font-main);
+      font-size: 24px;
       font-weight: 700;
-      margin-bottom: 16px;
-      color: #1a202c;
+      margin-bottom: 20px;
+      color: var(--primary-color);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -91,14 +119,14 @@
     }
     
     .provider-status {
-      background: #2d3748;
+      background: var(--secondary-color);
       color: white;
       padding: 14px 22px;
       border-radius: 10px;
       margin-bottom: 18px;
       font-size: 14px;
       text-align: center;
-      box-shadow: 0 2px 8px rgba(45, 55, 72, 0.15);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
     
     .provider-status strong {
@@ -106,6 +134,7 @@
       text-transform: uppercase;
       letter-spacing: 0.8px;
       font-weight: 700;
+      color: var(--accent-color);
     }
     
     .form-group {
@@ -116,7 +145,7 @@
       display: block;
       margin-bottom: 8px;
       font-weight: 600;
-      color: #4a5568;
+      color: var(--secondary-color);
       font-size: 14px;
     }
     
@@ -129,10 +158,10 @@
       border: 2px solid #e2e8f0;
       border-radius: 8px;
       font-size: 14px;
-      font-family: inherit;
+      font-family: var(--font-ui);
       transition: all 0.2s ease;
-      background: #f7fafc;
-      color: #2d3748;
+      background: #f9fafb;
+      color: var(--text-color);
     }
     
     input[type="text"]:focus,
@@ -140,8 +169,8 @@
     select:focus,
     textarea:focus {
       outline: none;
-      border-color: #4299e1;
-      box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(224, 122, 95, 0.1);
       background: white;
     }
     
@@ -169,22 +198,23 @@
       position: relative;
       background: white;
       font-weight: 600;
-      color: #4a5568;
+      color: #6b7280;
     }
     
     .provider-option:hover {
-      border-color: #cbd5e0;
-      background: #f7fafc;
+      border-color: var(--accent-color);
+      background: #fff;
       transform: translateY(-2px);
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      color: var(--accent-color);
     }
     
     .provider-option.selected {
-      border-color: #2d3748;
+      border-color: var(--primary-color);
       border-width: 3px;
-      background: #2d3748;
+      background: var(--primary-color);
       color: white;
-      box-shadow: 0 4px 12px rgba(45, 55, 72, 0.2);
+      box-shadow: 0 4px 12px rgba(31, 41, 55, 0.2);
       transform: scale(1.03);
     }
     
@@ -193,7 +223,7 @@
       position: absolute;
       top: -10px;
       right: -10px;
-      background: #48bb78;
+      background: var(--accent-color);
       color: white;
       padding: 4px 8px;
       border-radius: 6px;
@@ -210,7 +240,7 @@
     .provider-config {
       display: none;
       padding: 20px;
-      background: #f7fafc;
+      background: #f9fafb;
       border: 2px solid #e2e8f0;
       border-radius: 12px;
       margin-bottom: 20px;
@@ -236,7 +266,7 @@
       content: '⚙️ Configuration for selected provider';
       display: block;
       font-weight: 700;
-      color: #2d3748;
+      color: var(--primary-color);
       margin-bottom: 16px;
       padding-bottom: 12px;
       border-bottom: 2px solid #e2e8f0;
@@ -248,7 +278,7 @@
       align-items: center;
       gap: 10px;
       padding: 16px;
-      background: #f7fafc;
+      background: #f9fafb;
       border-radius: 10px;
       cursor: pointer;
       border: 1px solid #e2e8f0;
@@ -257,29 +287,38 @@
     
     .checkbox-group:hover {
       background: white;
-      border-color: #cbd5e0;
+      border-color: var(--accent-color);
     }
     
     .checkbox-group input[type="checkbox"] {
       width: 20px;
       height: 20px;
       cursor: pointer;
-      accent-color: #2d3748;
+      accent-color: var(--primary-color);
     }
     
     .checkbox-group label {
       margin: 0;
       cursor: pointer;
       flex: 1;
-      color: #2d3748;
+      color: var(--text-color);
       font-weight: 600;
     }
     
     .help-text {
       font-size: 12px;
-      color: #718096;
+      color: #6b7280;
       margin-top: 6px;
       line-height: 1.5;
+    }
+    
+    .help-text a {
+        color: var(--accent-color);
+        text-decoration: none;
+    }
+    
+    .help-text a:hover {
+        text-decoration: underline;
     }
     
     .btn-container {
@@ -303,41 +342,43 @@
     }
     
     .btn-primary {
-      background: #2d3748;
+      background: var(--primary-color);
       color: white;
-      box-shadow: 0 2px 8px rgba(45, 55, 72, 0.2);
+      box-shadow: 0 2px 8px rgba(31, 41, 55, 0.2);
     }
     
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(45, 55, 72, 0.3);
-      background: #1a202c;
+      box-shadow: 0 4px 16px rgba(31, 41, 55, 0.3);
+      background: var(--secondary-color);
     }
     
     .btn-secondary {
-      background: #edf2f7;
-      color: #4a5568;
+      background: white;
+      color: var(--secondary-color);
       border: 1px solid #e2e8f0;
     }
     
     .btn-secondary:hover {
-      background: #e2e8f0;
-      border-color: #cbd5e0;
+      background: #f9fafb;
+      border-color: #d1d5db;
+      color: var(--primary-color);
     }
     
     .save-notification {
       position: fixed;
       top: 20px;
       right: 20px;
-      background: #2d3748;
+      background: var(--primary-color);
       color: white;
       padding: 16px 28px;
       border-radius: 10px;
-      box-shadow: 0 4px 16px rgba(45, 55, 72, 0.3);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
       opacity: 0;
       transform: translateX(100px);
       transition: opacity 0.3s ease, transform 0.3s ease;
       font-weight: 600;
+      border-left: 4px solid var(--accent-color);
     }
     
     .save-notification.show {
@@ -346,14 +387,19 @@
     }
     
     .info-box {
-      background: #ebf8ff;
-      border-left: 4px solid #4299e1;
+      background: #f0fdf4;
+      border-left: 4px solid #10b981;
       padding: 16px;
       border-radius: 8px;
       margin-bottom: 20px;
       font-size: 14px;
-      color: #2c5282;
+      color: #064e3b;
       line-height: 1.6;
+    }
+    
+    .info-box a {
+        color: #059669;
+        font-weight: bold;
     }
   </style>
 </head>
@@ -472,7 +518,7 @@
             <label for="fastApiEndpoint">FastAPI Endpoint URL</label>
             <input type="text" id="fastApiEndpoint" placeholder="http://localhost:8000/correct">
             <div class="help-text">
-              <strong>Just enter base URL (e.g., https://infraai01.az.joby.aero)</strong><br>
+              <strong>Just enter base URL (e.g., https://example.url.com)</strong><br>
               • Will auto-append /v1/chat/completions<br>
               • No API key or model required for internal endpoints
             </div>

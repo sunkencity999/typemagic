@@ -20,3 +20,9 @@ test.html
 # Temporary files
 *.tmp
 *.temp
+
+# Website
+typemagic_website/
+
+# Releases
+*.zip

@@ -5,6 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TypeMagic User Guide</title>
   <style>
+    /* Font Faces */
+    @font-face {
+        font-family: 'Calendas Plus';
+        src: url('fonts/calendas_plus_regular.woff2') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+    }
+    @font-face {
+        font-family: 'Calendas Plus';
+        src: url('fonts/calendas_plus_bold.woff2') format('woff2');
+        font-weight: bold;
+        font-style: normal;
+    }
+
+    /* Variables */
+    :root {
+        --primary-color: #1f2937; /* Charcoal */
+        --secondary-color: #374151; /* Lighter Charcoal */
+        --accent-color: #e07a5f; /* Burnt Sienna */
+        --text-color: #111827;
+        --bg-color: #ffffff;
+        --font-main: 'Calendas Plus', serif;
+        --font-ui: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -12,10 +37,10 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-family: var(--font-ui);
       line-height: 1.6;
-      color: #2c3e50;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: var(--text-color);
+      background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
       padding: 40px 20px;
     }
 
@@ -23,27 +48,30 @@
       max-width: 900px;
       margin: 0 auto;
       background: white;
-      border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
       overflow: hidden;
+      border: 1px solid rgba(0, 0, 0, 0.05);
     }
 
     .header {
-      background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+      background: var(--primary-color);
       color: white;
       padding: 60px 40px;
       text-align: center;
     }
 
     .header h1 {
-      font-size: 2.5rem;
+      font-family: var(--font-main);
+      font-size: 3rem;
       font-weight: 700;
       margin-bottom: 10px;
     }
 
     .header .subtitle {
-      font-size: 1.1rem;
-      opacity: 0.95;
+      font-size: 1.2rem;
+      opacity: 0.9;
+      font-weight: 500;
     }
 
     .content {
@@ -59,35 +87,40 @@
     }
 
     h2 {
-      font-size: 1.8rem;
-      color: #2d3748;
+      font-family: var(--font-main);
+      font-size: 2rem;
+      color: var(--primary-color);
       margin-bottom: 20px;
       padding-bottom: 10px;
-      border-bottom: 2px solid #e0e0e0;
+      border-bottom: 2px solid #e5e7eb;
     }
 
     h3 {
       font-size: 1.3rem;
-      color: #4a5568;
+      color: var(--secondary-color);
       margin: 30px 0 15px 0;
+      font-weight: 700;
     }
 
     p {
       margin-bottom: 15px;
-      color: #555;
+      color: #4b5563;
     }
 
     .key-feature {
-      background: #f8f9fa;
-      border-left: 4px solid #2d3748;
+      background: #f9fafb;
+      border-left: 4px solid var(--accent-color);
       padding: 20px;
       margin: 20px 0;
-      border-radius: 4px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
     }
 
     .key-feature strong {
-      color: #2d3748;
+      color: var(--primary-color);
       font-size: 1.1rem;
+      display: block;
+      margin-bottom: 8px;
     }
 
     ul, ol {
@@ -96,20 +129,26 @@
 
     li {
       margin-bottom: 10px;
-      color: #555;
+      color: #4b5563;
+    }
+    
+    li strong {
+        color: var(--primary-color);
     }
 
     .workflow {
-      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      background: white;
       padding: 25px;
-      border-radius: 8px;
+      border-radius: 12px;
       margin: 20px 0;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     }
 
     .workflow-step {
       display: flex;
       align-items: flex-start;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
 
     .workflow-step:last-child {
@@ -117,10 +156,10 @@
     }
 
     .step-number {
-      background: #2d3748;
+      background: var(--primary-color);
       color: white;
-      width: 30px;
-      height: 30px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -128,77 +167,102 @@
       font-weight: bold;
       margin-right: 15px;
       flex-shrink: 0;
+      font-family: var(--font-ui);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
     .step-content {
       flex: 1;
     }
+    
+    .step-content strong {
+        color: var(--primary-color);
+    }
 
     .tip-box {
-      background: #fff3cd;
-      border-left: 4px solid #ffc107;
+      background: #fff7ed; /* Light orange/sienna tint */
+      border-left: 4px solid var(--accent-color);
       padding: 20px;
       margin: 20px 0;
-      border-radius: 4px;
+      border-radius: 8px;
     }
 
     .tip-box strong {
-      color: #856404;
+      color: #9a3412;
     }
 
     .shortcut-key {
-      background: #e9ecef;
+      background: white;
       padding: 4px 8px;
-      border-radius: 4px;
-      font-family: 'Monaco', 'Courier New', monospace;
+      border-radius: 6px;
+      font-family: var(--font-ui);
+      font-weight: 600;
       font-size: 0.9rem;
-      border: 1px solid #dee2e6;
+      border: 1px solid #d1d5db;
       display: inline-block;
       margin: 0 2px;
+      color: var(--primary-color);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     }
 
     .comparison-table {
       width: 100%;
-      border-collapse: collapse;
+      border-collapse: separate;
+      border-spacing: 0;
       margin: 20px 0;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
     }
 
     .comparison-table th,
     .comparison-table td {
       padding: 15px;
       text-align: left;
-      border-bottom: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e5e7eb;
     }
 
     .comparison-table th {
-      background: #f8f9fa;
-      color: #2d3748;
-      font-weight: 600;
+      background: #f9fafb;
+      color: var(--primary-color);
+      font-weight: 700;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    
+    .comparison-table tr:last-child td {
+        border-bottom: none;
     }
 
-    .comparison-table tr:hover {
-      background: #f8f9fa;
+    .comparison-table tr:hover td {
+      background: #f9fafb;
     }
 
     .footer {
-      background: #f8f9fa;
+      background: #f9fafb;
       padding: 30px 40px;
       text-align: center;
-      color: #666;
-      border-top: 1px solid #e0e0e0;
+      color: #9ca3af;
+      border-top: 1px solid #e5e7eb;
+      font-size: 0.9rem;
     }
 
     .footer p {
       margin-bottom: 10px;
+      color: #6b7280;
+    }
+    
+    .footer strong {
+        color: var(--primary-color);
     }
 
     code {
-      background: #f8f9fa;
+      background: #f3f4f6;
       padding: 2px 6px;
-      border-radius: 3px;
-      font-family: 'Monaco', 'Courier New', monospace;
+      border-radius: 4px;
+      font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
       font-size: 0.9rem;
-      color: #e83e8c;
+      color: var(--accent-color);
+      border: 1px solid #e5e7eb;
     }
 
     @media (max-width: 768px) {
@@ -534,9 +598,9 @@
     </div>
 
     <div class="footer">
-      <p><strong>TypeMagic v1.1.0</strong></p>
+      <p><strong>TypeMagic v1.2.0</strong></p>
       <p>Developed by Christopher Bradford</p>
-      <p>For support, visit the GitHub repository or contact admin@robotbirdservices.com</p>
+      <p>For support, visit the GitHub repository or contact support@typemagic.pro </p>
     </div>
   </div>
 </body>
