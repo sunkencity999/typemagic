@@ -4,11 +4,11 @@
 
 TypeMagic is a Chrome extension that automatically corrects spelling, grammar, and formatting in any text field across the web. Type freely without worrying about accuracy—let AI handle the corrections!
 
-**Instant Corrections with Keyboard Shortcut**: Press Cmd+Shift+M (Mac) or Ctrl+Shift+M (Windows/Linux) to instantly correct the entire field of text, or specific selected text anywhere on the web.
+**Instant Corrections with Keyboard Shortcut**: Press Cmd+Option+T (Mac) or Ctrl+Alt+T (Windows/Linux) to instantly correct the entire field of text, or specific selected text anywhere on the web.
 
 ## Features
 
-- **Keyboard Shortcut**: Press Cmd+Shift+M (Mac) or Ctrl+Shift+M (Windows/Linux) for instant corrections
+- **Keyboard Shortcut**: Press Cmd+Option+T (Mac) or Ctrl+Alt+T (Windows/Linux) for instant corrections
 - **Tone Adjustment**: Choose between "Keep My Voice", "More Professional", or "More Casual"
 - **Quick Actions**: Convert to bullet points or create concise summaries with one click
 - **Universal Compatibility**: Works on any webpage with text inputs (email, docs, social media, etc.)
@@ -101,7 +101,7 @@ Create your own instructions for the AI by editing the "Custom System Prompt" fi
 ### Quick Keyboard Shortcut (Recommended)
 
 1. **Click in any text field** or **select text** you want to correct
-2. **Press Cmd+Shift+M** (Mac) or **Ctrl+Shift+M** (Windows/Linux)
+2. **Press Cmd+Option+T** (Mac) or **Ctrl+Alt+T** (Windows/Linux)
 3. Your text is instantly corrected in place!
 
 This works everywhere: Gmail, Twitter, LinkedIn, Reddit, forums, text fields, and more.
@@ -133,7 +133,7 @@ This works everywhere: Gmail, Twitter, LinkedIn, Reddit, forums, text fields, an
 - For partial corrections: Select only the text you want to fix before using the keyboard shortcut
 - Review AI suggestions—they're usually excellent but not always perfect
 - Google Docs requires the manual copy/paste workflow due to browser security restrictions
-- Use the keyboard shortcut (Cmd+Shift+M) for the fastest workflow
+- Use the keyboard shortcut (Cmd+Option+T / Ctrl+Alt+T) for the fastest workflow
 
 ## Supported Websites
 

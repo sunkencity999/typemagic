@@ -513,33 +513,39 @@ function setupSelectionTracking() {
   }
 }
 
-// Keyboard shortcut: Ctrl/Cmd+Shift+M to correct selected text
+// Keyboard shortcut: Cmd+Option+T (macOS) or Ctrl+Alt+T (Windows/Linux) to correct selected text
 document.addEventListener('keydown', async (e) => {
-  // Check for Ctrl+Shift+M (Windows/Linux) or Cmd+Shift+M (Mac)
+  // Check for trigger key (T on all platforms)
   // Handle both uppercase and lowercase, and check keyCode as fallback
-  const isM = e.key === 'M' || e.key === 'm' || e.code === 'KeyM' || e.keyCode === 77;
-  
-  if ((e.ctrlKey || e.metaKey) && e.shiftKey && isM) {
+  const isMac = navigator.platform.toUpperCase().includes('MAC');
+
+  const isT = e.key === 'T' || e.key === 't' || e.code === 'KeyT' || e.keyCode === 84;
+
+  // Cmd+Option+T on macOS, Ctrl+Alt+T on Windows/Linux
+  const isMacShortcut = isMac && e.metaKey && e.altKey && isT;
+  const isWindowsLikeShortcut = !isMac && e.ctrlKey && e.altKey && isT;
+
+  if (isMacShortcut || isWindowsLikeShortcut) {
     e.preventDefault();
     e.stopPropagation();
-    e.stopImmediatePropagation(); // Stop Gmail from catching it
-    
-    console.log('🪄 TypeMagic: Keyboard shortcut triggered (Ctrl/Cmd+Shift+M)');
-    
+    e.stopImmediatePropagation(); // Stop site-specific shortcuts from catching it
+
+    console.log('🪄 TypeMagic: Keyboard shortcut triggered (Cmd+Option+T / Ctrl+Alt+T)');
+
     const activeElement = document.activeElement;
-    
+
     // Check if we're in an editable element
     if (isEditableElement(activeElement)) {
       // Check if there's selected text
       let hasSelection = false;
-      
+
       if (activeElement.tagName === 'TEXTAREA' || activeElement.tagName === 'INPUT') {
         hasSelection = activeElement.selectionStart !== activeElement.selectionEnd;
       } else if (activeElement.isContentEditable) {
         const selection = window.getSelection();
         hasSelection = selection && selection.toString().trim().length > 0;
       }
-      
+
       if (hasSelection || activeElement.value?.trim() || activeElement.innerText?.trim()) {
         showNotification('✨ Correcting text...', 'info');
         const dummyIcon = document.createElement('div');
@@ -551,7 +557,7 @@ document.addEventListener('keydown', async (e) => {
       showNotification('⚠️ Please click in a text field first', 'warning');
     }
   }
-}, true); // Use capture phase to intercept before Gmail's shortcuts
+}, true); // Use capture phase to intercept before site shortcuts
 
 // Initialize
 async function init() {
@@ -566,7 +572,7 @@ async function init() {
   // Set up selection tracking for Google Docs
   setupSelectionTracking();
   
-  console.log('🪄 TypeMagic: Initialization complete - use popup button or Ctrl/Cmd+Shift+M to correct text');
+  console.log('🪄 TypeMagic: Initialization complete - use popup button or Cmd+Option+T / Ctrl+Alt+T to correct text');
 }
 
 // Start when DOM is ready
