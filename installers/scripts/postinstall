@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# TypeMagic Ollama Installer for macOS
+# Post-install script running as root
+
+LOG_FILE="/tmp/typemagic_ollama_install.log"
+OLLAMA_ORIGIN="chrome-extension://*"
+
+echo "Starting TypeMagic Ollama Setup (Post-install)..." | tee -a "$LOG_FILE"
+
+# Detect the real user (the one currently logged into the console)
+CONSOLE_USER=$(stat -f "%Su" /dev/console)
+
+if [ -z "$CONSOLE_USER" ] || [ "$CONSOLE_USER" = "root" ]; then
+    # Fallback if no console user (e.g. ssh install), try to find a non-root user?
+    # For now, just use root if we have to, but warn.
+    echo "Warning: console user is root or not found. Installing as root." | tee -a "$LOG_FILE"
+    TARGET_USER="root"
+    USER_HOME="/var/root"
+else
+    TARGET_USER="$CONSOLE_USER"
+    USER_HOME=$(dscl . -read /Users/$TARGET_USER NFSHomeDirectory | awk '{print $2}')
+fi
+
+echo "Target User: $TARGET_USER" | tee -a "$LOG_FILE"
+echo "User Home: $USER_HOME" | tee -a "$LOG_FILE"
+
+# 1. Detect/Install Ollama (System-wide)
+if ! command -v ollama &> /dev/null; then
+    echo "Ollama not found. Installing..." | tee -a "$LOG_FILE"
+    curl -fsSL https://ollama.com/install.sh | sh
+else
+    echo "Ollama is already installed." | tee -a "$LOG_FILE"
+fi
+
+# 2. Set Environment Variable for the USER
+echo "Configuring environment variables..." | tee -a "$LOG_FILE"
+
+# Update Zshrc
+RC_FILE="$USER_HOME/.zshrc"
+if [ ! -f "$RC_FILE" ]; then
+    RC_FILE="$USER_HOME/.bash_profile" # Fallback
+fi
+
+# Just append to .zshrc to be safe for macOS default
+RC_FILE_ZSH="$USER_HOME/.zshrc"
+
+if ! grep -q "OLLAMA_ORIGINS" "$RC_FILE_ZSH" 2>/dev/null; then
+    echo "export OLLAMA_ORIGINS=\"$OLLAMA_ORIGIN\"" >> "$RC_FILE_ZSH"
+    chown "$TARGET_USER" "$RC_FILE_ZSH"
+fi
+
+# 3. Pull Model as USER
+# We need to ensure the service is running.
+# Restart ollama to pick up potential system env changes? 
+# Or just rely on the user session.
+
+pkill ollama || true
+sleep 2
+
+# Start ollama as user in background to pull
+echo "Starting Ollama as $TARGET_USER to pull model..." | tee -a "$LOG_FILE"
+
+sudo -u "$TARGET_USER" bash -c "nohup ollama serve > /dev/null 2>&1 &"
+sleep 5
+
+echo "Pulling llama3.1:8b..." | tee -a "$LOG_FILE"
+sudo -u "$TARGET_USER" ollama pull llama3.1:8b
+
+echo "Setup Complete!" | tee -a "$LOG_FILE"
+
+exit 0

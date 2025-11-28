@@ -26,3 +26,8 @@ typemagic_website/
 
 # Releases
 *.zip
+
+# Installer Artifacts
+installers/*.pkg
+installers/*.exe
+installers/*.log
