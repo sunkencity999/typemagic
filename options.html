@@ -515,6 +515,14 @@
             <strong>Windows (PowerShell)</strong>: set a persistent user environment variable, then restart your terminal:
             <br>
             <code>[System.Environment]::SetEnvironmentVariable("OLLAMA_ORIGINS", "chrome-extension://*", "User")</code>
+            <br><br>
+            <div class="install-actions">
+              <button class="btn btn-primary" id="ollamaInstallBtn">One-button Install &amp; Launch (llama3.1 8B)</button>
+              <div class="help-text">
+                Downloads a tailored script for your OS that installs Ollama, sets <code>OLLAMA_ORIGINS</code>, pulls the <code>llama3.1:8b</code> model, and launches the server.
+              </div>
+              <div class="install-status" id="ollamaInstallStatus"></div>
+            </div>
           </div>
           <div class="form-group">
             <label for="ollamaEndpoint">Ollama Endpoint</label>
