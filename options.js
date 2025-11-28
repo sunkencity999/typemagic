@@ -40,6 +40,33 @@ async function loadSettings() {
   document.getElementById('systemPrompt').value = settings.systemPrompt;
 }
 
+function setupMacInstallerHelp() {
+  const helpButton = document.getElementById('macInstallerHelp');
+  const modal = document.getElementById('macInstallerModal');
+  const closeBtn = document.getElementById('macInstallerModalClose');
+
+  const isMac = detectPlatform() === 'mac';
+  if (helpButton) {
+    helpButton.classList.toggle('visible', isMac);
+    helpButton.addEventListener('click', () => {
+      modal?.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    });
+  }
+
+  const hideModal = () => {
+    modal?.classList.remove('show');
+    document.body.style.overflow = '';
+  };
+
+  closeBtn?.addEventListener('click', hideModal);
+  modal?.addEventListener('click', (event) => {
+    if (event.target === modal) {
+      hideModal();
+    }
+  });
+}
+
 // Save settings to storage
 async function saveSettings() {
   const settings = {
@@ -159,6 +186,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (installBtn) {
     installBtn.addEventListener('click', handleOllamaInstallClick);
   }
+
+  setupMacInstallerHelp();
 });
 
 function handleOllamaInstallClick() {
@@ -173,14 +202,15 @@ function handleOllamaInstallClick() {
     return;
   }
 
-  const script = buildInstallScript(platform);
-  if (!script) {
+  const installer = getInstallerForPlatform(platform);
+  if (!installer) {
     statusEl.textContent = 'Unsupported platform. Please install Ollama manually from https://ollama.ai';
     return;
   }
 
-  downloadScript(script);
-  statusEl.innerHTML = `✅ Downloaded <code>${script.filename}</code>.<br>Open a terminal, run it (e.g. <code>${script.runCommand}</code>), and keep the window open while Ollama serves llama3.1:8b.`;
+  downloadInstaller(installer);
+  statusEl.innerHTML = `✅ Downloaded <code>${installer.filename}</code> (<code>${installer.sha256}</code>).<br>
+    Double-click the downloaded installer to finish setup. You can also find it on <a href="https://github.com/sunkencity999/typemagic/releases/tag/v1.0.0" target="_blank">GitHub Releases</a>.`;
 }
 
 function detectPlatform() {
@@ -191,126 +221,33 @@ function detectPlatform() {
   return null;
 }
 
-function buildInstallScript(platform) {
-  switch (platform) {
-    case 'mac':
-      return {
-        filename: 'install-ollama-macos.sh',
-        runCommand: 'sh install-ollama-macos.sh',
-        content: `#!/usr/bin/env bash
-set -euo pipefail
+function getInstallerForPlatform(platform) {
+  const installers = {
+    mac: {
+      filename: 'TypeMagicOllamaInstaller-macOS.pkg',
+      url: 'https://github.com/sunkencity999/typemagic/releases/download/v1.0.0/TypeMagicOllamaInstaller-macOS.pkg',
+      sha256: '613b9da944a03fb82fe38ad2d161b1af5d74de63ff5a84c1a2b26dfa2cdd174c'
+    },
+    linux: {
+      filename: 'TypeMagicOllamaInstaller-Linux.sh',
+      url: 'https://github.com/sunkencity999/typemagic/releases/download/v1.0.0/TypeMagicOllamaInstaller-Linux.sh',
+      sha256: '05a071492ea0974f43328b7e3a17528466dde9c8ff09b07807cfdc264bac0207'
+    },
+    windows: {
+      filename: 'TypeMagicOllamaInstaller-Windows.exe',
+      url: 'https://github.com/sunkencity999/typemagic/releases/download/v1.0.0/TypeMagicOllamaInstaller-Windows.exe',
+      sha256: '1aeb150219873418e47658f23bdae1a517f73e846677920c0b6f3b3e9a6e34ab'
+    }
+  };
 
-command -v curl >/dev/null 2>&1 || { echo "curl is required"; exit 1; }
-
-if command -v ollama >/dev/null 2>&1; then
-  echo "✅ Ollama already installed. Skipping download."
-else
-  echo "➡️ Installing Ollama..."
-  curl -fsSL https://ollama.com/install.sh | sh
-fi
-
-PROFILE="$HOME/.zshrc"
-if [[ "$SHELL" == *"bash"* ]]; then PROFILE="$HOME/.bashrc"; fi
-LINE='export OLLAMA_ORIGINS="chrome-extension://*"'
-touch "$PROFILE"
-grep -F "$LINE" "$PROFILE" >/dev/null 2>&1 || echo "$LINE" >> "$PROFILE"
-export OLLAMA_ORIGINS="chrome-extension://*"
-echo "✅ OLLAMA_ORIGINS set (and persisted in $PROFILE)."
-
-echo "➡️ Pulling llama3.1:8b..."
-ollama pull llama3.1:8b
-
-if curl -sf http://127.0.0.1:11434/api/version >/dev/null; then
-  echo "✅ Ollama is already running. No need to start a new server."
-else
-  echo "➡️ Starting Ollama (logs: /tmp/ollama.log)..."
-  nohup env OLLAMA_ORIGINS="chrome-extension://*" ollama serve >/tmp/ollama.log 2>&1 &
-  echo "✅ Ollama is starting. Keep this terminal open if prompted."
-fi
-`
-      };
-    case 'linux':
-      return {
-        filename: 'install-ollama-linux.sh',
-        runCommand: 'sh install-ollama-linux.sh',
-        content: `#!/usr/bin/env bash
-set -euo pipefail
-
-command -v curl >/dev/null 2>&1 || { echo "curl is required"; exit 1; }
-
-if command -v ollama >/dev/null 2>&1; then
-  echo "✅ Ollama already installed. Skipping download."
-else
-  echo "➡️ Installing Ollama..."
-  curl -fsSL https://ollama.com/install.sh | sh
-fi
-
-PROFILE="$HOME/.bashrc"
-LINE='export OLLAMA_ORIGINS="chrome-extension://*"'
-touch "$PROFILE"
-grep -F "$LINE" "$PROFILE" >/dev/null 2>&1 || echo "$LINE" >> "$PROFILE"
-export OLLAMA_ORIGINS="chrome-extension://*"
-echo "✅ OLLAMA_ORIGINS set (and persisted in $PROFILE)."
-
-echo "➡️ Pulling llama3.1:8b..."
-ollama pull llama3.1:8b
-
-if curl -sf http://127.0.0.1:11434/api/version >/dev/null; then
-  echo "✅ Ollama is already running. No need to start a new server."
-else
-  echo "➡️ Starting Ollama (logs: /tmp/ollama.log)..."
-  nohup env OLLAMA_ORIGINS="chrome-extension://*" ollama serve >/tmp/ollama.log 2>&1 &
-  echo "✅ Ollama is starting. Keep this terminal open if prompted."
-fi
-`
-      };
-    case 'windows':
-      return {
-        filename: 'install-ollama-windows.ps1',
-        runCommand: 'powershell -ExecutionPolicy Bypass -File install-ollama-windows.ps1',
-        content: `Set-StrictMode -Version Latest
-$ErrorActionPreference = 'Stop'
-
-if (Get-Command ollama -ErrorAction SilentlyContinue) {
-  Write-Host '✅ Ollama already installed. Skipping download.'
-} else {
-  Write-Host '➡️ Installing Ollama via winget...'
-  if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
-    Write-Error 'winget is required. Install it from https://learn.microsoft.com/windows/package-manager/winget/'
-  }
-  winget install -e --id Ollama.Ollama --source winget -h
+  return installers[platform] || null;
 }
 
-[Environment]::SetEnvironmentVariable('OLLAMA_ORIGINS', 'chrome-extension://*', 'User')
-$env:OLLAMA_ORIGINS = 'chrome-extension://*'
-Write-Host '✅ OLLAMA_ORIGINS set for the current and future sessions.'
-
-Write-Host '➡️ Pulling llama3.1:8b...'
-ollama pull llama3.1:8b
-
-try {
-  Invoke-WebRequest -Uri 'http://127.0.0.1:11434/api/version' -Method Get -TimeoutSec 5 | Out-Null
-  Write-Host '✅ Ollama is already running. No need to start a new server.'
-} catch {
-  Write-Host '➡️ Starting Ollama in the background...'
-  Start-Process -FilePath 'ollama' -ArgumentList 'serve' -WindowStyle Hidden -Environment @{ OLLAMA_ORIGINS = 'chrome-extension://*' }
-  Write-Host '✅ Ollama is starting with llama3.1:8b ready.'
-}
-`
-      };
-    default:
-      return null;
-  }
-}
-
-function downloadScript({ filename, content }) {
-  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
+function downloadInstaller({ filename, url }) {
   const link = document.createElement('a');
   link.href = url;
   link.download = filename;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-  URL.revokeObjectURL(url);
 }

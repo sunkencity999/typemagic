@@ -43,6 +43,79 @@
       padding: 40px 20px;
       color: var(--text-color);
     }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #fff;
+      border-radius: 16px;
+      max-width: 520px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(15, 23, 42, 0.25);
+      padding: 28px 32px;
+      position: relative;
+      font-family: var(--font-ui);
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      border: none;
+      background: transparent;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--secondary-color);
+    }
+
+    .modal-content h3 {
+      margin-bottom: 12px;
+      font-family: var(--font-main);
+      font-size: 22px;
+      color: var(--primary-color);
+    }
+
+    .modal-content ol {
+      margin-left: 18px;
+      margin-top: 12px;
+      line-height: 1.6;
+    }
+
+    .modal-content .note {
+      background: #f9fafb;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-top: 16px;
+      font-size: 14px;
+      color: var(--secondary-color);
+    }
+
+    .mac-help-link {
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--accent-color);
+      cursor: pointer;
+      display: none;
+    }
+
+    .mac-help-link.visible {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
     
     .container {
       max-width: 850px;
@@ -519,8 +592,13 @@
             <div class="install-actions">
               <button class="btn btn-primary" id="ollamaInstallBtn">One-button Install &amp; Launch (llama3.1 8B)</button>
               <div class="help-text">
-                Downloads a tailored script for your OS that installs Ollama, sets <code>OLLAMA_ORIGINS</code>, pulls the <code>llama3.1:8b</code> model, and launches the server.
+                Detects your OS and downloads the signed TypeMagic Ollama installer (v1.0.0). It installs/configures Ollama, sets <code>OLLAMA_ORIGINS</code>, pulls <code>llama3.1:8b</code>, and starts the server.
+                View installers manually on <a href="https://github.com/sunkencity999/typemagic/releases/tag/v1.0.0" target="_blank">GitHub Releases</a>.
               </div>
+              <button class="mac-help-link" id="macInstallerHelp">
+                ⚠️ macOS says "Cannot verify"?
+                <span>View quick workaround</span>
+              </button>
               <div class="install-status" id="ollamaInstallStatus"></div>
             </div>
           </div>
@@ -581,7 +659,26 @@
       </div>
     </div>
   </div>
-  
+
+  <div class="modal-overlay" id="macInstallerModal" role="dialog" aria-modal="true" aria-labelledby="macInstallerModalTitle">
+    <div class="modal-content">
+      <button class="modal-close-btn" id="macInstallerModalClose" aria-label="Close">
+        &times;
+      </button>
+      <h3 id="macInstallerModalTitle">Open the macOS Installer</h3>
+      <p>macOS Gatekeeper may block unsigned apps. To run the TypeMagic installer:</p>
+      <ol>
+        <li>Open <strong>Finder ▸ Downloads</strong> and locate <code>TypeMagicOllamaInstaller-macOS.pkg</code>.</li>
+        <li><strong>Control-click</strong> (or right-click) the file and choose <strong>Open</strong>.</li>
+        <li>In the warning dialog, click <strong>Open</strong> to confirm.</li>
+        <li>If you still see the warning, go to <strong>System Settings ▸ Privacy &amp; Security</strong>, scroll to <em>Security</em>, and click <strong>Open Anyway</strong>.</li>
+      </ol>
+      <div class="note">
+        We’re working on a fully signed &amp; notarized installer. Until then, these steps tell macOS you trust the download.
+      </div>
+    </div>
+  </div>
+
   <div class="save-notification" id="saveNotification">
     ✅ Settings saved successfully!
   </div>
