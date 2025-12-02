@@ -573,17 +573,17 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		39D7A0022EE0A1A5009ABCDE /* XCRemoteSwiftPackageReference "macos" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = ../macos;
+/* Begin XCLocalSwiftPackageReference section */
+		39D7A0022EE0A1A5009ABCDE /* XCLocalSwiftPackageReference "macos" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../macos";
 		};
-/* End XCRemoteSwiftPackageReference section */
+/* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		39D7A0032EE0A1A5009ABCDE /* TypeMagicKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 39D7A0022EE0A1A5009ABCDE /* XCRemoteSwiftPackageReference "macos" */;
+			package = 39D7A0022EE0A1A5009ABCDE /* XCLocalSwiftPackageReference "macos" */;
 			productName = TypeMagicKit;
 		};
 /* End XCSwiftPackageProductDependency section */
