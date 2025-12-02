@@ -6,8 +6,9 @@ public struct TypeMagicMenuBarScene: Scene {
     public init() {}
 
     public var body: some Scene {
-        Settings {
+        WindowGroup {
             EmptyView()
         }
+        .windowResizability(.contentSize)
     }
 }
