@@ -47,7 +47,7 @@ Conclusion: The port is **very possible**. The main engineering surface is Acces
 
 ## 3. Architecture Decision — Option A Locked In
 
-We are moving forward with **Option A (Native SwiftUI menu bar app)**. The new Swift Package (see `macos/Package.swift`) already boots a `MenuBarExtra` application with the following components:
+We are moving forward with **Option A (Native SwiftUI menu bar app)**. The new Swift Package (see `macos/Package.swift`) already boots a native status-item application (backed by `NSStatusItem` so it always appears in the menu bar, even on macOS 15+) with the following components:
 
 | Layer | Swift Types | Notes |
 | --- | --- | --- |
@@ -88,7 +88,7 @@ We are moving forward with **Option A (Native SwiftUI menu bar app)**. The new S
 
 ## 6. Delivery Roadmap (Active)
 
-1. ✅ **Bootstrap Swift core** — Swift Package (`TypeMagicKit`) created with `MenuBarExtra`, PromptBuilder parity, ProviderRouter, Accessibility services, Keychain-backed settings, and global shortcut monitor.
+1. ✅ **Bootstrap Swift core** — Swift Package (`TypeMagicKit`) created with a SwiftUI popover hosted inside an `NSStatusItem`, PromptBuilder parity, ProviderRouter, Accessibility services, Keychain-backed settings, and global shortcut monitor.
 2. ⏳ **Deep integration testing** — exercise the Accessibility pipeline across popular apps (Mail, Notes, Pages, Slack, Chrome, Notion) to validate selection reads/writes and clipboard fallback messaging.
 3. ⏳ **UI polish & notifications** — align the SwiftUI design with the Chrome popup styles (gradients, icons) and add native notifications for success/error states.
 4. ⏳ **Feature parity gap list** — port Google Docs-specific instructions, tone quick actions, Markdown preview, and provider test button.
@@ -100,7 +100,7 @@ We are moving forward with **Option A (Native SwiftUI menu bar app)**. The new S
 ## 7. Xcode Project Integration (Current State)
 
 - **Project location**: `typemagic/typemagic.xcodeproj`
-- **Dependency graph**: the project consumes the local Swift package `../macos` as `TypeMagicKit`. All core logic, UI, and provider networking live in that package. The app target only hosts the `@main` entry point (`TypeMagicApp`) which renders the exported `TypeMagicMenuBarScene` from the package.
+- **Dependency graph**: the project consumes the local Swift package `../macos` as `TypeMagicKit`. All core logic, UI, and provider networking live in that package. The app target is now a thin SwiftUI `App` that delegates to `TypeMagicAppCoordinator`, which creates a native `NSStatusItem` (always visible wand icon) hosting the SwiftUI popover.
 - **Toolchain requirement**: both the Swift package and the Xcode target are set to **Swift 5.8 / Xcode 14.3+**. Earlier toolchains cannot resolve the manifest. If you open the project in a newer Xcode (15.x/16.x) it will still compile because Swift is backwards compatible.
 - **Resolving the package**: after opening the project, choose **File ▸ Packages ▸ Reset Package Caches** (or “Resolve Package Versions”) if Xcode shows “Package resolution errors”. Because the dependency is local (`../macos`), it resolves instantly once caches are cleared.
 - **Resolving the package**: after opening the project, choose **File ▸ Packages ▸ Reset Package Caches** (or “Resolve Package Versions”) if Xcode shows “Package resolution errors”. Because the dependency is local (`../macos`), it resolves instantly once caches are cleared. Xcode generates its own `Package.resolved` file inside the workspace; we intentionally do **not** commit one so the local filesystem path can vary per developer.

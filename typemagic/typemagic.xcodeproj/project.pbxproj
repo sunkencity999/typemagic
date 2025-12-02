@@ -202,7 +202,7 @@
 			mainGroup = 3927F94B2EDE9F39007953CA;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				39D7A0022EE0A1A5009ABCDE /* XCLocalSwiftPackageReference "macos" */,
+				39D7A0022EE0A1A5009ABCDE /* XCLocalSwiftPackageReference "../macos" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3927F9552EDE9F39007953CA /* Products */;
@@ -574,16 +574,16 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		39D7A0022EE0A1A5009ABCDE /* XCLocalSwiftPackageReference "macos" */ = {
+		39D7A0022EE0A1A5009ABCDE /* XCLocalSwiftPackageReference "../macos" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "../macos";
+			relativePath = ../macos;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		39D7A0032EE0A1A5009ABCDE /* TypeMagicKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 39D7A0022EE0A1A5009ABCDE /* XCLocalSwiftPackageReference "macos" */;
+			package = 39D7A0022EE0A1A5009ABCDE /* XCLocalSwiftPackageReference "../macos" */;
 			productName = TypeMagicKit;
 		};
 /* End XCSwiftPackageProductDependency section */
