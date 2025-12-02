@@ -31,3 +31,6 @@ typemagic_website/
 installers/*.pkg
 installers/*.exe
 installers/*.log
+
+# Xcode/SwiftPM state
+typemagic/typemagic.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved

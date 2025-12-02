@@ -101,9 +101,11 @@ We are moving forward with **Option A (Native SwiftUI menu bar app)**. The new S
 
 - **Project location**: `typemagic/typemagic.xcodeproj`
 - **Dependency graph**: the project consumes the local Swift package `../macos` as `TypeMagicKit`. All core logic, UI, and provider networking live in that package. The app target only hosts the `@main` entry point (`TypeMagicApp`) which renders the exported `TypeMagicMenuBarScene` from the package.
+- **Toolchain requirement**: both the Swift package and the Xcode target are set to **Swift 5.8 / Xcode 14.3+**. Earlier toolchains cannot resolve the manifest. If you open the project in a newer Xcode (15.x/16.x) it will still compile because Swift is backwards compatible.
+- **Resolving the package**: after opening the project, choose **File ▸ Packages ▸ Reset Package Caches** (or “Resolve Package Versions”) if Xcode shows “Package resolution errors”. Because the dependency is local (`../macos`), it resolves instantly once caches are cleared.
+- **Resolving the package**: after opening the project, choose **File ▸ Packages ▸ Reset Package Caches** (or “Resolve Package Versions”) if Xcode shows “Package resolution errors”. Because the dependency is local (`../macos`), it resolves instantly once caches are cleared. Xcode generates its own `Package.resolved` file inside the workspace; we intentionally do **not** commit one so the local filesystem path can vary per developer.
 - **Entitlements**: sandboxing is disabled for now (`typemagic.entitlements` is empty) so that Accessibility APIs and global shortcuts function. When preparing for the App Store, replace this with the appropriate sandbox exceptions.
 - **Info.plist values**: added `LSUIElement=YES` to hide the dock icon and `NSAppleEventsUsageDescription` to explain why the app controls other apps.
-- **Build**: opening the Xcode project resolves the local package automatically. Select the `typemagic` scheme and build/archive as usual. (`xcodebuild` is unavailable in this CI environment due to the Command Line Tools-only toolchain, but the project is ready for a full Xcode install.)
 - **Signing**: the project file keeps the provided Development Team ID; update it if you use a different account before archiving.
 
 ---
