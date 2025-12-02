@@ -405,6 +405,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = typemagic/typemagic.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -426,7 +427,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 5.9;
 			};
 			name = Debug;
 		};
@@ -437,6 +438,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = typemagic/typemagic.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -458,7 +460,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 5.9;
 			};
 			name = Release;
 		};
@@ -475,7 +477,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.bradford.typeR198x.typemagicTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 5.9;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/typemagic.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/typemagic";
 			};
 			name = Debug;
@@ -493,7 +495,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.bradford.typeR198x.typemagicTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 5.9;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/typemagic.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/typemagic";
 			};
 			name = Release;
@@ -509,7 +511,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.bradford.typeR198x.typemagicUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 5.9;
 				TEST_TARGET_NAME = typemagic;
 			};
 			name = Debug;
@@ -525,7 +527,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.bradford.typeR198x.typemagicUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 5.9;
 				TEST_TARGET_NAME = typemagic;
 			};
 			name = Release;
@@ -575,9 +577,6 @@
 		39D7A0022EE0A1A5009ABCDE /* XCRemoteSwiftPackageReference "macos" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = ../macos;
-			requirement = {
-				kind = localPackage;
-			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
