@@ -21,9 +21,9 @@ struct TypeMagicApp: App {
 }
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
-    private var coordinator: TypeMagicAppCoordinator?
+    private var coordinator: AnyObject?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        coordinator = TypeMagicAppCoordinator()
+        coordinator = startTypeMagicStatusItemApp()
     }
 }

@@ -50,3 +50,8 @@ public final class TypeMagicAppCoordinator {
         statusController = StatusItemController(viewModel: model)
     }
 }
+
+@MainActor
+public func startTypeMagicStatusItemApp() -> AnyObject {
+    TypeMagicAppCoordinator()
+}
