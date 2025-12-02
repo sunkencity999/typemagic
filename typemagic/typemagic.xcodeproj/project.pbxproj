@@ -202,7 +202,7 @@
 			mainGroup = 3927F94B2EDE9F39007953CA;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				39D7A0022EE0A1A5009ABCDE /* XCRemoteSwiftPackageReference "macos" */,
+				39D7A0022EE0A1A5009ABCDE /* XCLocalSwiftPackageReference "macos" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3927F9552EDE9F39007953CA /* Products */;
