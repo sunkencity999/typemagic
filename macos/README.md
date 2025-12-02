@@ -88,12 +88,23 @@ We are moving forward with **Option A (Native SwiftUI menu bar app)**. The new S
 
 ## 6. Delivery Roadmap (Active)
 
-1. ✅ **Bootstrap Swift core** — Swift Package created with `MenuBarExtra`, PromptBuilder parity, ProviderRouter, Accessibility services, Keychain-backed settings, and global shortcut monitor.
+1. ✅ **Bootstrap Swift core** — Swift Package (`TypeMagicKit`) created with `MenuBarExtra`, PromptBuilder parity, ProviderRouter, Accessibility services, Keychain-backed settings, and global shortcut monitor.
 2. ⏳ **Deep integration testing** — exercise the Accessibility pipeline across popular apps (Mail, Notes, Pages, Slack, Chrome, Notion) to validate selection reads/writes and clipboard fallback messaging.
 3. ⏳ **UI polish & notifications** — align the SwiftUI design with the Chrome popup styles (gradients, icons) and add native notifications for success/error states.
 4. ⏳ **Feature parity gap list** — port Google Docs-specific instructions, tone quick actions, Markdown preview, and provider test button.
 5. ⏳ **Packaging** — wrap the Swift Package in an Xcode workspace so it can be notarized and distributed via DMG/TestFlight, and wire up Sparkle or auto-update once build targets exist.
 6. ⏳ **Automation & QA** — expand unit coverage (PromptBuilder already has an initial test) and add integration harnesses for provider stubs.
+
+---
+
+## 7. Xcode Project Integration (Current State)
+
+- **Project location**: `typemagic/typemagic.xcodeproj`
+- **Dependency graph**: the project consumes the local Swift package `../macos` as `TypeMagicKit`. All core logic, UI, and provider networking live in that package. The app target only hosts the `@main` entry point (`TypeMagicApp`) which renders the exported `TypeMagicMenuBarScene` from the package.
+- **Entitlements**: sandboxing is disabled for now (`typemagic.entitlements` is empty) so that Accessibility APIs and global shortcuts function. When preparing for the App Store, replace this with the appropriate sandbox exceptions.
+- **Info.plist values**: added `LSUIElement=YES` to hide the dock icon and `NSAppleEventsUsageDescription` to explain why the app controls other apps.
+- **Build**: opening the Xcode project resolves the local package automatically. Select the `typemagic` scheme and build/archive as usual. (`xcodebuild` is unavailable in this CI environment due to the Command Line Tools-only toolchain, but the project is ready for a full Xcode install.)
+- **Signing**: the project file keeps the provided Development Team ID; update it if you use a different account before archiving.
 
 ---
 

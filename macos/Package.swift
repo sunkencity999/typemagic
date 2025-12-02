@@ -4,22 +4,22 @@
 import PackageDescription
 
 let package = Package(
-    name: "TypeMagicMac",
+    name: "TypeMagicKit",
     platforms: [
         .macOS(.v13)
     ],
     products: [
-        .executable(name: "TypeMagicMac", targets: ["TypeMagicMac"])
+        .library(name: "TypeMagicKit", targets: ["TypeMagicKit"])
     ],
     targets: [
-        .executableTarget(
-            name: "TypeMagicMac",
-            path: "Sources/TypeMagicMac"
+        .target(
+            name: "TypeMagicKit",
+            path: "Sources/TypeMagicKit"
         ),
         .testTarget(
-            name: "TypeMagicMacTests",
-            dependencies: ["TypeMagicMac"],
-            path: "Tests/TypeMagicMacTests"
+            name: "TypeMagicKitTests",
+            dependencies: ["TypeMagicKit"],
+            path: "Tests/TypeMagicKitTests"
         )
     ]
 )

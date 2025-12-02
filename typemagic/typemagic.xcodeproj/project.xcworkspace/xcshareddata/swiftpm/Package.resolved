@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "typemagickit",
+      "kind" : "localSourceControl",
+      "location" : "../macos",
+      "state" : {
+        "revision" : "UNVERSIONED",
+        "version" : null
+      }
+    }
+  ],
+  "version" : 2
+}

@@ -1,10 +1,11 @@
 import SwiftUI
 
-@main
-struct TypeMagicMacApp: App {
+public struct TypeMagicMenuBarScene: Scene {
     @StateObject private var model = AppViewModel()
 
-    var body: some Scene {
+    public init() {}
+
+    public var body: some Scene {
         MenuBarExtra("TypeMagic", systemImage: "wand.and.stars") {
             ControlPanelView(model: model)
         }

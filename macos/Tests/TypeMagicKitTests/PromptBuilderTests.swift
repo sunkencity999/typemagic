@@ -1,6 +1,6 @@
 #if canImport(XCTest)
 import XCTest
-@testable import TypeMagicMac
+@testable import TypeMagicKit
 
 final class PromptBuilderTests: XCTestCase {
     func testSummaryInstructionsIncludeRules() {

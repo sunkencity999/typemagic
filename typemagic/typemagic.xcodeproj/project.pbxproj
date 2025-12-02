@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		39D7A0012EE0A1A5009ABCDE /* TypeMagicKit in Frameworks */ = {isa = PBXBuildFile; productRef = 39D7A0032EE0A1A5009ABCDE /* TypeMagicKit */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		3927F9632EDE9F3B007953CA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				39D7A0012EE0A1A5009ABCDE /* TypeMagicKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +117,7 @@
 			);
 			name = typemagic;
 			packageProductDependencies = (
+				39D7A0032EE0A1A5009ABCDE /* TypeMagicKit */,
 			);
 			productName = typemagic;
 			productReference = 3927F9542EDE9F39007953CA /* typemagic.app */;
@@ -195,6 +201,9 @@
 			);
 			mainGroup = 3927F94B2EDE9F39007953CA;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				39D7A0022EE0A1A5009ABCDE /* XCRemoteSwiftPackageReference "macos" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3927F9552EDE9F39007953CA /* Products */;
 			projectDirPath = "";
@@ -394,6 +403,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = typemagic/typemagic.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -402,6 +412,10 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Type Magic";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSAppleEventsUsageDescription = "TypeMagic needs access to control and paste text inside other applications.";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -421,6 +435,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = typemagic/typemagic.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -429,6 +444,10 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Type Magic";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSAppleEventsUsageDescription = "TypeMagic needs access to control and paste text inside other applications.";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -551,6 +570,24 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		39D7A0022EE0A1A5009ABCDE /* XCRemoteSwiftPackageReference "macos" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = ../macos;
+			requirement = {
+				kind = localPackage;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		39D7A0032EE0A1A5009ABCDE /* TypeMagicKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 39D7A0022EE0A1A5009ABCDE /* XCRemoteSwiftPackageReference "macos" */;
+			productName = TypeMagicKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3927F94C2EDE9F39007953CA /* Project object */;
 }

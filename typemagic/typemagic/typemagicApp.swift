@@ -6,12 +6,11 @@
 //
 
 import SwiftUI
+import TypeMagicKit
 
 @main
-struct typemagicApp: App {
+struct TypeMagicApp: App {
     var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
+        TypeMagicMenuBarScene()
     }
 }
