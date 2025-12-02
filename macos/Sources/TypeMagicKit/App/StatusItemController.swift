@@ -24,8 +24,17 @@ final class StatusItemController: NSObject {
 
     private func configureButton() {
         guard let button = statusItem.button else { return }
-        button.image = NSImage(systemSymbolName: "wand.and.stars", accessibilityDescription: "TypeMagic")
-        button.imagePosition = .imageOnly
+
+        if let image = NSImage(systemSymbolName: "wand.and.stars", accessibilityDescription: "TypeMagic") {
+            image.isTemplate = true
+            button.image = image
+            button.imagePosition = .imageOnly
+        } else {
+            button.title = "✨"
+            button.font = .systemFont(ofSize: 15)
+        }
+
+        button.toolTip = "TypeMagic"
         button.action = #selector(togglePopover(_:))
         button.target = self
     }
