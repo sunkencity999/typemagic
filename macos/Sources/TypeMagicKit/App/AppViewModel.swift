@@ -14,7 +14,7 @@ final class AppViewModel: ObservableObject {
     private let engine: TypeMagicEngine
     private let shortcutMonitor = GlobalShortcutMonitor()
 
-    init(settingsStore: SettingsStore = SettingsStore()) {
+    init(settingsStore: SettingsStore) {
         self.settingsStore = settingsStore
         self.engine = TypeMagicEngine(settingsStore: settingsStore)
         self.useMarkdown = settingsStore.settings.useMarkdown
