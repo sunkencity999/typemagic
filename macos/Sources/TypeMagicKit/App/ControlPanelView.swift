@@ -54,7 +54,7 @@ struct ControlPanelView: View {
             SettingsView(settingsStore: model.settingsStore)
         }
         .sheet(isPresented: $model.showUserGuide) {
-            UserGuideView()
+            UserGuideView(onClose: { model.showUserGuide = false })
         }
     }
 
