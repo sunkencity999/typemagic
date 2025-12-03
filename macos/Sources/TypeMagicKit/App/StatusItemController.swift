@@ -8,6 +8,16 @@ final class StatusItemController: NSObject {
     private let popover = NSPopover()
     private let viewModel: AppViewModel
     private var cancellables = Set<AnyCancellable>()
+    private let badgeView: NSView = {
+        let view = NSView(frame: NSRect(x: 0, y: 0, width: 10, height: 10))
+        view.wantsLayer = true
+        view.layer?.backgroundColor = NSColor.systemYellow.cgColor
+        view.layer?.cornerRadius = 5
+        view.layer?.borderColor = NSColor.white.cgColor
+        view.layer?.borderWidth = 1
+        view.isHidden = true
+        return view
+    }()
 
     init(viewModel: AppViewModel) {
         self.viewModel = viewModel
@@ -40,7 +50,20 @@ final class StatusItemController: NSObject {
         button.toolTip = "TypeMagic"
         button.action = #selector(togglePopover(_:))
         button.target = self
+        installBadgeViewIfNeeded(on: button)
         updateButtonAppearance(isClipboardReady: viewModel.clipboardReady)
+    }
+
+    private func installBadgeViewIfNeeded(on button: NSStatusBarButton) {
+        guard badgeView.superview == nil else { return }
+        badgeView.translatesAutoresizingMaskIntoConstraints = false
+        button.addSubview(badgeView)
+        NSLayoutConstraint.activate([
+            badgeView.widthAnchor.constraint(equalToConstant: 10),
+            badgeView.heightAnchor.constraint(equalToConstant: 10),
+            badgeView.topAnchor.constraint(equalTo: button.topAnchor, constant: 2),
+            badgeView.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -2)
+        ])
     }
 
     private func observeClipboardState() {
@@ -55,11 +78,14 @@ final class StatusItemController: NSObject {
     private func updateButtonAppearance(isClipboardReady: Bool) {
         guard let button = statusItem.button else { return }
         if isClipboardReady {
-            button.contentTintColor = NSColor.systemYellow
-            button.alphaValue = 1.0
-        } else {
             button.contentTintColor = NSColor.labelColor
+            button.alphaValue = 1.0
+            badgeView.layer?.backgroundColor = NSColor.labelColor.cgColor
+            badgeView.isHidden = false
+        } else {
+            button.contentTintColor = NSColor.white
             button.alphaValue = 0.8
+            badgeView.isHidden = true
         }
     }
 

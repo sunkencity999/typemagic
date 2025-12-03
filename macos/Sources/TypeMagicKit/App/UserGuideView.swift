@@ -48,6 +48,9 @@ struct UserGuideView: View {
                         guideStep(number: "3", title: "Paste the corrected result") {
                             Text("Return to your document and paste (⌘V). Because the workflow is clipboard-first, it works consistently across sandboxed macOS apps.")
                         }
+                        guideStep(number: "4", title: "Watch the wand badge") {
+                            Text("When new clipboard text is ready, the menu-bar wand turns dark and shows a gold badge. Once you paste the content, it returns to its idle glow.")
+                        }
                     }
 
                     Divider()
@@ -68,14 +71,16 @@ struct UserGuideView: View {
                             Text("Confirm TypeMagic is enabled in System Settings → Privacy & Security → Accessibility and Input Monitoring, and that you copied text before pressing Cmd+Option+T.")
                         }
                         guideStep(number: "•", title: "Clipboard stayed unchanged") {
-                            Text("Re-copy the text and try again—some editors clear the clipboard after short delays. The status line in the popover shows the last operation result.")
+                            Text("Re-copy the text and try again—some editors clear the clipboard after short delays. The status line in the popover shows the last operation result. Also, check the menu-bar badge for any error messages.")
                         }
                     }
 
                     Text("Need more help?")
                         .font(.headline)
-                    Text("Email support@typemagic.app or revisit the Chrome extension guide for provider-specific tips.")
-                        .font(.body)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Email support@typemagic.pro for assistance.")
+                        Link("Visit typemagic.pro for tutorials and updates", destination: URL(string: "https://typemagic.pro")!)
+                    }
                 }
                 .padding(24)
                 .frame(maxWidth: .infinity, alignment: .leading)
