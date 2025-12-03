@@ -47,7 +47,7 @@ final class TypeMagicEngine {
             clipboard.write(corrected)
             return CorrectionResult(originalText: text, correctedText: corrected, source: .clipboard)
         } catch let error as AccessibilityError {
-            if case .permissionDenied = error { throw error }
+            // Fallback to clipboard if accessibility fails or permission is denied (e.g. Sandboxed)
             let clipboardText = clipboard.readString()
             guard !clipboardText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { throw error }
             let corrected = try await correct(text: clipboardText, request: request)
