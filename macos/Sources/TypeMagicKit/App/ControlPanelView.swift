@@ -53,6 +53,9 @@ struct ControlPanelView: View {
         .sheet(isPresented: $showSettings) {
             SettingsView(settingsStore: model.settingsStore)
         }
+        .sheet(isPresented: $model.showUserGuide) {
+            UserGuideView()
+        }
     }
 
     private var header: some View {
@@ -69,6 +72,11 @@ struct ControlPanelView: View {
                 Image(systemName: "gearshape")
             }
             .buttonStyle(.plain)
+            Button(action: { model.showUserGuide = true }) {
+                Image(systemName: "questionmark.circle")
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Open TypeMagic User Guide")
         }
     }
 

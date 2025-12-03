@@ -8,6 +8,7 @@ final class AppViewModel: ObservableObject {
     @Published var isProcessing: Bool = false
     @Published var selectedTone: Tone = .preserve
     @Published var useMarkdown: Bool
+    @Published var showUserGuide: Bool = false
 
     let settingsStore: SettingsStore
 
