@@ -75,7 +75,28 @@ final class AppViewModel: ObservableObject {
         isProcessing = false
     }
 
+    private func performClipboardCorrection() async {
+        guard let clipboardText = NSPasteboard.general.string(forType: .string)?.trimmingCharacters(in: .whitespacesAndNewlines), !clipboardText.isEmpty else {
+            statusMessage = "Copy text before pressing ⌘⌥T"
+            return
+        }
+
+        isProcessing = true
+        statusMessage = "Correcting clipboard..."
+        do {
+            let request = CorrectionRequest(tone: selectedTone, bulletize: false, summarize: false, useMarkdown: useMarkdown)
+            let result = try await engine.correctManualText(clipboardText, request: request)
+            manualOutput = result.correctedText
+            NSPasteboard.general.clearContents()
+            NSPasteboard.general.setString(result.correctedText, forType: .string)
+            statusMessage = "Clipboard updated"
+        } catch {
+            statusMessage = error.localizedDescription
+        }
+        isProcessing = false
+    }
+
     private func handleGlobalShortcut() async {
-        await performFocusedCorrection(bulletize: false, summarize: false)
+        await performClipboardCorrection()
     }
 }

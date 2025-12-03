@@ -39,14 +39,14 @@ struct UserGuideView: View {
                     Divider()
 
                     Section(header: guideHeader("Using Cmd+Option+T")) {
-                        guideStep(number: "1", title: "Select text in any app") {
-                            Text("Highlight the text you want to improve. Most native and web editors are supported.")
+                        guideStep(number: "1", title: "Copy the text you want to improve") {
+                            Text("Highlight any text, press ⌘C, and keep the cursor near the original location. This ensures macOS grants TypeMagic access to the content.")
                         }
                         guideStep(number: "2", title: "Press Cmd + Option + T") {
-                            Text("TypeMagic captures the selection, runs the correction, and replaces the text automatically when the target app allows it.")
+                            Text("TypeMagic reads your clipboard, calls the selected AI provider, and writes the improved text back to the clipboard.")
                         }
-                        guideStep(number: "3", title: "Clipboard fallback") {
-                            Text("If an app blocks direct edits, TypeMagic copies the selection, returns the corrected text to your clipboard, and notifies you to paste.")
+                        guideStep(number: "3", title: "Paste the corrected result") {
+                            Text("Return to your document and paste (⌘V). Because the workflow is clipboard-first, it works consistently across sandboxed macOS apps.")
                         }
                     }
 
@@ -54,10 +54,10 @@ struct UserGuideView: View {
 
                     Section(header: guideHeader("Manual Panel")) {
                         guideStep(number: "1", title: "Manual input") {
-                            Text("Paste or type text into the Manual Text box inside the popover and click Correct, Bulletize, or Summarize.")
+                            Text("Paste text directly into the Manual Text box, then click Correct, Bulletize, or Summarize. The corrected text replaces the input and is copied to your clipboard automatically.")
                         }
                         guideStep(number: "2", title: "Tone + Markdown") {
-                            Text("Use the tone picker and Markdown toggle to match the output style you prefer.")
+                            Text("Use the tone picker and Markdown toggle to match the output style you prefer before copying it back into other apps.")
                         }
                     }
 
@@ -65,10 +65,10 @@ struct UserGuideView: View {
 
                     Section(header: guideHeader("Troubleshooting")) {
                         guideStep(number: "•", title: "Shortcut not firing") {
-                            Text("Confirm TypeMagic is enabled in System Settings → Privacy & Security → Accessibility and Input Monitoring. Restart the app after toggling.")
+                            Text("Confirm TypeMagic is enabled in System Settings → Privacy & Security → Accessibility and Input Monitoring, and that you copied text before pressing Cmd+Option+T.")
                         }
-                        guideStep(number: "•", title: "No replacement occurred") {
-                            Text("Some apps require the clipboard fallback. Check the status message in the popover after running the shortcut.")
+                        guideStep(number: "•", title: "Clipboard stayed unchanged") {
+                            Text("Re-copy the text and try again—some editors clear the clipboard after short delays. The status line in the popover shows the last operation result.")
                         }
                     }
 
