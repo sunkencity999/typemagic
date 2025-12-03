@@ -8,14 +8,26 @@ final class StatusItemController: NSObject {
     private let popover = NSPopover()
     private let viewModel: AppViewModel
     private var cancellables = Set<AnyCancellable>()
-    private let badgeView: NSView = {
-        let view = NSView(frame: NSRect(x: 0, y: 0, width: 10, height: 10))
+    private let dotsView: NSView = {
+        let view = NSView(frame: NSRect(x: 0, y: 0, width: 16, height: 4))
         view.wantsLayer = true
-        view.layer?.backgroundColor = NSColor.systemYellow.cgColor
-        view.layer?.cornerRadius = 5
-        view.layer?.borderColor = NSColor.white.cgColor
-        view.layer?.borderWidth = 1
+        view.layer = CALayer()
         view.isHidden = true
+
+        let dotCount = 3
+        let dotDiameter: CGFloat = 3
+        let spacing: CGFloat = 4
+        let totalWidth = CGFloat(dotCount) * dotDiameter + CGFloat(dotCount - 1) * spacing
+        var x = (16 - totalWidth) / 2
+        for _ in 0..<dotCount {
+            let dotLayer = CALayer()
+            dotLayer.backgroundColor = NSColor.labelColor.cgColor
+            dotLayer.frame = CGRect(x: x, y: 0.5, width: dotDiameter, height: dotDiameter)
+            dotLayer.cornerRadius = dotDiameter / 2
+            view.layer?.addSublayer(dotLayer)
+            x += dotDiameter + spacing
+        }
+
         return view
     }()
 
@@ -50,19 +62,19 @@ final class StatusItemController: NSObject {
         button.toolTip = "TypeMagic"
         button.action = #selector(togglePopover(_:))
         button.target = self
-        installBadgeViewIfNeeded(on: button)
+        installDotsViewIfNeeded(on: button)
         updateButtonAppearance(isClipboardReady: viewModel.clipboardReady)
     }
 
-    private func installBadgeViewIfNeeded(on button: NSStatusBarButton) {
-        guard badgeView.superview == nil else { return }
-        badgeView.translatesAutoresizingMaskIntoConstraints = false
-        button.addSubview(badgeView)
+    private func installDotsViewIfNeeded(on button: NSStatusBarButton) {
+        guard dotsView.superview == nil else { return }
+        dotsView.translatesAutoresizingMaskIntoConstraints = false
+        button.addSubview(dotsView)
         NSLayoutConstraint.activate([
-            badgeView.widthAnchor.constraint(equalToConstant: 10),
-            badgeView.heightAnchor.constraint(equalToConstant: 10),
-            badgeView.topAnchor.constraint(equalTo: button.topAnchor, constant: 2),
-            badgeView.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -2)
+            dotsView.heightAnchor.constraint(equalToConstant: 4),
+            dotsView.widthAnchor.constraint(equalToConstant: 16),
+            dotsView.centerXAnchor.constraint(equalTo: button.centerXAnchor),
+            dotsView.centerYAnchor.constraint(equalTo: button.centerYAnchor)
         ])
     }
 
@@ -80,12 +92,11 @@ final class StatusItemController: NSObject {
         if isClipboardReady {
             button.contentTintColor = NSColor.labelColor
             button.alphaValue = 1.0
-            badgeView.layer?.backgroundColor = NSColor.labelColor.cgColor
-            badgeView.isHidden = false
+            dotsView.isHidden = false
         } else {
             button.contentTintColor = NSColor.white
             button.alphaValue = 0.8
-            badgeView.isHidden = true
+            dotsView.isHidden = true
         }
     }
 

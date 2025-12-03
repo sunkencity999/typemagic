@@ -100,11 +100,11 @@ Create your own instructions for the AI by editing the "Custom System Prompt" fi
 
 ### Quick Keyboard Shortcut (Recommended)
 
-1. **Click in any text field** or **select text** you want to correct
+1. Click inside any text field in your browser.
 2. **Press Cmd+Option+T** (Mac) or **Ctrl+Alt+T** (Windows/Linux)
 3. Your text is instantly corrected in place!
 
-This works everywhere: Gmail, Twitter, LinkedIn, Reddit, forums, text fields, and more.
+This works anywhere you can type online—just place your cursor, use the shortcut, and TypeMagic handles the rest.
 
 ### Using the Popup
 
@@ -137,17 +137,7 @@ This works everywhere: Gmail, Twitter, LinkedIn, Reddit, forums, text fields, an
 
 ## Supported Websites
 
-TypeMagic works on virtually any website with text inputs:
-
-- **Email**: Gmail, Outlook, Yahoo Mail
-- **Documents**: Google Docs (via copy/paste), Notion, Confluence
-- **Social Media**: Twitter/X, Facebook, LinkedIn, Reddit
-- **Development**: GitHub, Stack Overflow, GitLab
-- **Education**: Canvas, Blackboard, Moodle
-- **Note Taking**: Evernote, OneNote, Bear
-- **Any webpage** with textarea, input, or contentEditable fields
-
-**Note:** Google Docs uses a proprietary editor that requires the copy/paste workflow described above.
+TypeMagic works on virtually any site with text inputs (email, docs, chat, note-taking, developer tools, etc.). Anywhere you can type, you can copy text, press the shortcut, and paste polished writing back in.
 
 ## Privacy & Security
 
