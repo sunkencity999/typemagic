@@ -1,63 +1,49 @@
 import Cocoa
-import Carbon
 
 @MainActor
 final class GlobalShortcutMonitor {
-    private var hotKeyRef: EventHotKeyRef?
-    private var eventHandlerRef: EventHandlerRef?
+    private var globalMonitor: Any?
+    private var localMonitor: Any?
     private var handler: (() -> Void)?
     private let keyCodeT: CGKeyCode = 17
-    private let signature: OSType = 0x544D484B // 'TMHK'
 
     func start(handler: @escaping () -> Void) {
         stop()
         self.handler = handler
-        registerHotKey()
+        registerMonitors()
     }
 
     func stop() {
-        if let hotKeyRef {
-            UnregisterEventHotKey(hotKeyRef)
+        if let globalMonitor {
+            NSEvent.removeMonitor(globalMonitor)
         }
-        hotKeyRef = nil
+        globalMonitor = nil
 
-        if let eventHandlerRef {
-            RemoveEventHandler(eventHandlerRef)
+        if let localMonitor {
+            NSEvent.removeMonitor(localMonitor)
         }
-        eventHandlerRef = nil
+        localMonitor = nil
         handler = nil
     }
 
-    private func registerHotKey() {
-        var eventType = EventTypeSpec(eventClass: OSType(kEventClassKeyboard), eventKind: UInt32(kEventHotKeyPressed))
-        let callback: EventHandlerUPP = { _, event, userData in
-            guard
-                let userData,
-                let hotKeyEvent = event
-            else { return noErr }
-
-            var hotKeyID = EventHotKeyID()
-            GetEventParameter(hotKeyEvent,
-                              EventParamName(kEventParamDirectObject),
-                              EventParamType(typeEventHotKeyID),
-                              nil,
-                              MemoryLayout<EventHotKeyID>.size,
-                              nil,
-                              &hotKeyID)
-
-            if hotKeyID.signature == 0x544D484B, hotKeyID.id == 1 {
-                let monitor = Unmanaged<GlobalShortcutMonitor>.fromOpaque(userData).takeUnretainedValue()
-                monitor.handler?()
-            }
-
-            return noErr
+    private func registerMonitors() {
+        globalMonitor = NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            self?.handle(event: event)
         }
 
-        let userData = UnsafeMutableRawPointer(Unmanaged.passUnretained(self).toOpaque())
-        InstallEventHandler(GetEventDispatcherTarget(), callback, 1, &eventType, userData, &eventHandlerRef)
+        localMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            self?.handle(event: event)
+            return event
+        }
+    }
 
-        var hotKeyID = EventHotKeyID(signature: signature, id: 1)
-        let modifiers: UInt32 = UInt32(cmdKey) | UInt32(optionKey)
-        RegisterEventHotKey(UInt32(keyCodeT), modifiers, hotKeyID, GetEventDispatcherTarget(), 0, &hotKeyRef)
+    private func handle(event: NSEvent) {
+        let modifiers: NSEvent.ModifierFlags = [.command, .option]
+        guard event.type == .keyDown,
+              event.keyCode == keyCodeT,
+              event.modifierFlags.isSuperset(of: modifiers)
+        else { return }
+
+        handler?()
     }
 }
