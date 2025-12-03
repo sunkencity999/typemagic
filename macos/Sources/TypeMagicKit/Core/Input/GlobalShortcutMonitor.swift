@@ -4,12 +4,15 @@ import Cocoa
 final class GlobalShortcutMonitor {
     private var globalMonitor: Any?
     private var localMonitor: Any?
-    private var handler: (() -> Void)?
+    private var shortcutHandler: (() -> Void)?
+    private var pasteHandler: (() -> Void)?
     private let keyCodeT: CGKeyCode = 17
+    private let keyCodeV: CGKeyCode = 9
 
-    func start(handler: @escaping () -> Void) {
+    func start(shortcutHandler: @escaping () -> Void, pasteHandler: (() -> Void)? = nil) {
         stop()
-        self.handler = handler
+        self.shortcutHandler = shortcutHandler
+        self.pasteHandler = pasteHandler
         registerMonitors()
     }
 
@@ -23,7 +26,8 @@ final class GlobalShortcutMonitor {
             NSEvent.removeMonitor(localMonitor)
         }
         localMonitor = nil
-        handler = nil
+        shortcutHandler = nil
+        pasteHandler = nil
     }
 
     private func registerMonitors() {
@@ -38,12 +42,14 @@ final class GlobalShortcutMonitor {
     }
 
     private func handle(event: NSEvent) {
-        let modifiers: NSEvent.ModifierFlags = [.command, .option]
-        guard event.type == .keyDown,
-              event.keyCode == keyCodeT,
-              event.modifierFlags.isSuperset(of: modifiers)
-        else { return }
+        guard event.type == .keyDown else { return }
+        let flags = event.modifierFlags
+        let keyCode = event.keyCode
 
-        handler?()
+        if flags.isSuperset(of: [.command, .option]), keyCode == keyCodeT {
+            shortcutHandler?()
+        } else if flags.contains(.command) && !flags.contains(.option) && keyCode == keyCodeV {
+            pasteHandler?()
+        }
     }
 }

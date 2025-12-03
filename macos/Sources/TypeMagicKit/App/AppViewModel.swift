@@ -16,13 +16,18 @@ final class AppViewModel: ObservableObject {
 
     private let engine: TypeMagicEngine
     private let shortcutMonitor = GlobalShortcutMonitor()
+    private let pasteboard = NSPasteboard.general
+    private var lastClipboardChangeCount: Int
 
     init(settingsStore: SettingsStore) {
         self.settingsStore = settingsStore
         self.engine = TypeMagicEngine(settingsStore: settingsStore)
         self.useMarkdown = settingsStore.settings.useMarkdown
+        self.lastClipboardChangeCount = NSPasteboard.general.changeCount
         shortcutMonitor.start { [weak self] in
             Task { await self?.handleGlobalShortcut() }
+        } pasteHandler: { [weak self] in
+            Task { await self?.handleClipboardPasteEvent() }
         }
     }
 
@@ -81,7 +86,7 @@ final class AppViewModel: ObservableObject {
 
     private func performClipboardCorrection() async {
         clipboardReady = false
-        guard let clipboardText = NSPasteboard.general.string(forType: .string)?.trimmingCharacters(in: .whitespacesAndNewlines), !clipboardText.isEmpty else {
+        guard let clipboardText = pasteboard.string(forType: .string)?.trimmingCharacters(in: .whitespacesAndNewlines), !clipboardText.isEmpty else {
             statusMessage = "Copy text before pressing ⌘⌥T"
             return
         }
@@ -92,8 +97,9 @@ final class AppViewModel: ObservableObject {
             let request = CorrectionRequest(tone: selectedTone, bulletize: false, summarize: false, useMarkdown: useMarkdown)
             let result = try await engine.correctManualText(clipboardText, request: request)
             manualOutput = result.correctedText
-            NSPasteboard.general.clearContents()
-            NSPasteboard.general.setString(result.correctedText, forType: .string)
+            pasteboard.clearContents()
+            pasteboard.setString(result.correctedText, forType: .string)
+            lastClipboardChangeCount = pasteboard.changeCount
             statusMessage = "Clipboard updated"
             clipboardReady = true
         } catch {
@@ -105,5 +111,15 @@ final class AppViewModel: ObservableObject {
 
     private func handleGlobalShortcut() async {
         await performClipboardCorrection()
+    }
+
+    private func handleClipboardPasteEvent() async {
+        guard clipboardReady else { return }
+        let currentCount = pasteboard.changeCount
+        if currentCount != lastClipboardChangeCount {
+            clipboardReady = false
+        } else {
+            clipboardReady = false
+        }
     }
 }
