@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 
 @MainActor
 final class AppViewModel: ObservableObject {
@@ -9,6 +10,7 @@ final class AppViewModel: ObservableObject {
     @Published var selectedTone: Tone = .preserve
     @Published var useMarkdown: Bool
     @Published var showUserGuide: Bool = false
+    @Published var clipboardReady: Bool = false
 
     let settingsStore: SettingsStore
 
@@ -34,6 +36,7 @@ final class AppViewModel: ObservableObject {
     }
 
     private func performManualCorrection(bulletize: Bool, summarize: Bool) async {
+        clipboardReady = false
         let trimmed = manualInput.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else {
             statusMessage = "Please enter text first"
@@ -47,6 +50,7 @@ final class AppViewModel: ObservableObject {
             manualOutput = result.correctedText
             manualInput = result.correctedText
             statusMessage = "Copied to clipboard"
+            clipboardReady = true
         } catch {
             statusMessage = error.localizedDescription
         }
@@ -76,6 +80,7 @@ final class AppViewModel: ObservableObject {
     }
 
     private func performClipboardCorrection() async {
+        clipboardReady = false
         guard let clipboardText = NSPasteboard.general.string(forType: .string)?.trimmingCharacters(in: .whitespacesAndNewlines), !clipboardText.isEmpty else {
             statusMessage = "Copy text before pressing ⌘⌥T"
             return
@@ -90,8 +95,10 @@ final class AppViewModel: ObservableObject {
             NSPasteboard.general.clearContents()
             NSPasteboard.general.setString(result.correctedText, forType: .string)
             statusMessage = "Clipboard updated"
+            clipboardReady = true
         } catch {
             statusMessage = error.localizedDescription
+            clipboardReady = false
         }
         isProcessing = false
     }

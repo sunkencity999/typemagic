@@ -1,11 +1,13 @@
 import AppKit
 import SwiftUI
+import Combine
 
 @MainActor
 final class StatusItemController: NSObject {
     private let statusItem: NSStatusItem
     private let popover = NSPopover()
     private let viewModel: AppViewModel
+    private var cancellables = Set<AnyCancellable>()
 
     init(viewModel: AppViewModel) {
         self.viewModel = viewModel
@@ -13,6 +15,7 @@ final class StatusItemController: NSObject {
         super.init()
         configurePopover()
         configureButton()
+        observeClipboardState()
     }
 
     private func configurePopover() {
@@ -37,6 +40,27 @@ final class StatusItemController: NSObject {
         button.toolTip = "TypeMagic"
         button.action = #selector(togglePopover(_:))
         button.target = self
+        updateButtonAppearance(isClipboardReady: viewModel.clipboardReady)
+    }
+
+    private func observeClipboardState() {
+        viewModel.$clipboardReady
+            .receive(on: RunLoop.main)
+            .sink { [weak self] isReady in
+                self?.updateButtonAppearance(isClipboardReady: isReady)
+            }
+            .store(in: &cancellables)
+    }
+
+    private func updateButtonAppearance(isClipboardReady: Bool) {
+        guard let button = statusItem.button else { return }
+        if isClipboardReady {
+            button.contentTintColor = NSColor.systemYellow
+            button.alphaValue = 1.0
+        } else {
+            button.contentTintColor = NSColor.labelColor
+            button.alphaValue = 0.8
+        }
     }
 
     @objc private func togglePopover(_ sender: Any?) {
