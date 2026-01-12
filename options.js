@@ -15,7 +15,8 @@ const defaultSettings = {
   ollamaEndpoint: 'http://localhost:11434',
   ollamaModel: 'llama3.2',
   useMarkdown: false,
-  systemPrompt: ''
+  systemPrompt: '',
+  customDictionary: [] // Array of {term, action, replacement?}
 };
 
 // Load settings from storage
@@ -38,6 +39,9 @@ async function loadSettings() {
   document.getElementById('ollamaModel').value = settings.ollamaModel;
   document.getElementById('useMarkdown').checked = settings.useMarkdown;
   document.getElementById('systemPrompt').value = settings.systemPrompt;
+  
+  // Load custom dictionary
+  renderDictionary(settings.customDictionary || []);
 }
 
 function setupMacInstallerHelp() {
@@ -69,6 +73,8 @@ function setupMacInstallerHelp() {
 
 // Save settings to storage
 async function saveSettings() {
+  const currentSettings = await chrome.storage.sync.get({ customDictionary: [] });
+  
   const settings = {
     provider: document.querySelector('input[name="provider"]:checked').value,
     openaiKey: document.getElementById('openaiKey').value,
@@ -81,7 +87,8 @@ async function saveSettings() {
     ollamaEndpoint: document.getElementById('ollamaEndpoint').value,
     ollamaModel: document.getElementById('ollamaModel').value,
     useMarkdown: document.getElementById('useMarkdown').checked,
-    systemPrompt: document.getElementById('systemPrompt').value
+    systemPrompt: document.getElementById('systemPrompt').value,
+    customDictionary: currentSettings.customDictionary
   };
   
   await chrome.storage.sync.set(settings);
@@ -188,6 +195,30 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   setupMacInstallerHelp();
+  
+  // Dictionary UI handlers
+  const addDictBtn = document.getElementById('addDictBtn');
+  if (addDictBtn) {
+    addDictBtn.addEventListener('click', addDictionaryEntry);
+  }
+  
+  const dictActionSelect = document.getElementById('newDictAction');
+  const dictReplacementInput = document.getElementById('newDictReplacement');
+  if (dictActionSelect && dictReplacementInput) {
+    dictActionSelect.addEventListener('change', (e) => {
+      dictReplacementInput.style.display = e.target.value === 'replace' ? 'block' : 'none';
+    });
+  }
+  
+  // Allow Enter key to add dictionary entry
+  const dictTermInput = document.getElementById('newDictTerm');
+  if (dictTermInput) {
+    dictTermInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        addDictionaryEntry();
+      }
+    });
+  }
 });
 
 function handleOllamaInstallClick() {
@@ -250,4 +281,108 @@ function downloadInstaller({ filename, url }) {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+}
+
+// Dictionary management functions
+function renderDictionary(dictionary) {
+  const listEl = document.getElementById('dictionaryList');
+  if (!listEl) return;
+  
+  if (!dictionary || dictionary.length === 0) {
+    listEl.innerHTML = '<div class="dictionary-empty">No custom terms added yet. Add terms above to preserve brand names, technical vocabulary, or set custom replacements.</div>';
+    return;
+  }
+  
+  listEl.innerHTML = dictionary.map((entry, index) => {
+    const actionLabel = {
+      'preserve': 'Preserve',
+      'ignore': 'Ignore',
+      'replace': 'Replace'
+    }[entry.action] || entry.action;
+    
+    const replacementHtml = entry.action === 'replace' && entry.replacement 
+      ? `<span class="replacement">→ ${escapeHtml(entry.replacement)}</span>` 
+      : '';
+    
+    return `
+      <div class="dictionary-entry" data-index="${index}">
+        <span class="term">${escapeHtml(entry.term)}</span>
+        <span class="action ${entry.action}">${actionLabel}</span>
+        ${replacementHtml}
+        <button class="delete-btn" data-index="${index}" title="Remove">×</button>
+      </div>
+    `;
+  }).join('');
+  
+  // Add delete handlers
+  listEl.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      const index = parseInt(e.target.dataset.index);
+      await deleteDictionaryEntry(index);
+    });
+  });
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+async function addDictionaryEntry() {
+  const termInput = document.getElementById('newDictTerm');
+  const actionSelect = document.getElementById('newDictAction');
+  const replacementInput = document.getElementById('newDictReplacement');
+  
+  const term = termInput.value.trim();
+  const action = actionSelect.value;
+  const replacement = replacementInput.value.trim();
+  
+  if (!term) {
+    alert('Please enter a term');
+    return;
+  }
+  
+  if (action === 'replace' && !replacement) {
+    alert('Please enter a replacement for this term');
+    return;
+  }
+  
+  const settings = await chrome.storage.sync.get({ customDictionary: [] });
+  const dictionary = settings.customDictionary || [];
+  
+  // Check for duplicates
+  if (dictionary.some(e => e.term.toLowerCase() === term.toLowerCase())) {
+    alert('This term already exists in your dictionary');
+    return;
+  }
+  
+  const entry = { term, action };
+  if (action === 'replace') {
+    entry.replacement = replacement;
+  }
+  
+  dictionary.push(entry);
+  await chrome.storage.sync.set({ customDictionary: dictionary });
+  
+  // Clear inputs
+  termInput.value = '';
+  replacementInput.value = '';
+  actionSelect.value = 'preserve';
+  replacementInput.style.display = 'none';
+  
+  renderDictionary(dictionary);
+  showSaveNotification('Term added to dictionary');
+}
+
+async function deleteDictionaryEntry(index) {
+  const settings = await chrome.storage.sync.get({ customDictionary: [] });
+  const dictionary = settings.customDictionary || [];
+  
+  if (index >= 0 && index < dictionary.length) {
+    dictionary.splice(index, 1);
+    await chrome.storage.sync.set({ customDictionary: dictionary });
+    renderDictionary(dictionary);
+    showSaveNotification('Term removed from dictionary');
+  }
 }

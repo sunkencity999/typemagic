@@ -3,14 +3,174 @@
 
 console.log('🪄 TypeMagic: Background service worker loaded');
 
+// Error codes and user-friendly messages
+const ERROR_MESSAGES = {
+  'NETWORK_ERROR': 'Network error. Check your internet connection.',
+  'API_KEY_MISSING': 'API key not configured. Open Settings to add your key.',
+  'API_KEY_INVALID': 'Invalid API key. Please check your key in Settings.',
+  'RATE_LIMITED': 'Rate limited. Please wait a moment and try again.',
+  'SERVER_ERROR': 'Server error. The AI provider is having issues.',
+  'TIMEOUT': 'Request timed out. Try again or use a faster model.',
+  'QUOTA_EXCEEDED': 'API quota exceeded. Check your billing or try a different provider.',
+  'MODEL_NOT_FOUND': 'Model not found. Check your model name in Settings.',
+  'CONTENT_FILTERED': 'Content was filtered by the AI provider.',
+  'UNKNOWN': 'An unexpected error occurred. Please try again.'
+};
+
+// Retry configuration
+const RETRY_CONFIG = {
+  maxRetries: 2,
+  retryDelay: 1000, // ms
+  retryableStatuses: [429, 500, 502, 503, 504]
+};
+
+// Parse error response and return user-friendly message
+function parseErrorResponse(error, provider) {
+  const errorStr = error.message || error.toString();
+  
+  // Check for common error patterns
+  if (errorStr.includes('Failed to fetch') || errorStr.includes('NetworkError')) {
+    return { code: 'NETWORK_ERROR', message: ERROR_MESSAGES.NETWORK_ERROR };
+  }
+  if (errorStr.includes('401') || errorStr.includes('Unauthorized') || errorStr.includes('invalid_api_key')) {
+    return { code: 'API_KEY_INVALID', message: ERROR_MESSAGES.API_KEY_INVALID };
+  }
+  if (errorStr.includes('429') || errorStr.includes('rate_limit') || errorStr.includes('Rate limit')) {
+    return { code: 'RATE_LIMITED', message: ERROR_MESSAGES.RATE_LIMITED };
+  }
+  if (errorStr.includes('500') || errorStr.includes('502') || errorStr.includes('503') || errorStr.includes('504')) {
+    return { code: 'SERVER_ERROR', message: `${provider} server error. Try again in a moment.` };
+  }
+  if (errorStr.includes('timeout') || errorStr.includes('Timeout')) {
+    return { code: 'TIMEOUT', message: ERROR_MESSAGES.TIMEOUT };
+  }
+  if (errorStr.includes('quota') || errorStr.includes('billing') || errorStr.includes('insufficient_quota')) {
+    return { code: 'QUOTA_EXCEEDED', message: ERROR_MESSAGES.QUOTA_EXCEEDED };
+  }
+  if (errorStr.includes('model') && (errorStr.includes('not found') || errorStr.includes('does not exist'))) {
+    return { code: 'MODEL_NOT_FOUND', message: ERROR_MESSAGES.MODEL_NOT_FOUND };
+  }
+  if (errorStr.includes('content_filter') || errorStr.includes('flagged')) {
+    return { code: 'CONTENT_FILTERED', message: ERROR_MESSAGES.CONTENT_FILTERED };
+  }
+  
+  // Return original error if no pattern matched
+  return { code: 'UNKNOWN', message: errorStr.substring(0, 200) };
+}
+
+// Retry wrapper for API calls
+async function withRetry(fn, provider) {
+  let lastError;
+  
+  for (let attempt = 0; attempt <= RETRY_CONFIG.maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+      const errorStr = error.message || '';
+      
+      // Check if this is a retryable error
+      const isRetryable = RETRY_CONFIG.retryableStatuses.some(status => 
+        errorStr.includes(status.toString())
+      ) || errorStr.includes('rate_limit') || errorStr.includes('Rate limit');
+      
+      if (isRetryable && attempt < RETRY_CONFIG.maxRetries) {
+        console.log(`🪄 TypeMagic: Retry attempt ${attempt + 1} for ${provider} after error:`, errorStr);
+        await new Promise(resolve => setTimeout(resolve, RETRY_CONFIG.retryDelay * (attempt + 1)));
+        continue;
+      }
+      
+      // Not retryable or max retries reached
+      break;
+    }
+  }
+  
+  // Parse and throw user-friendly error
+  const parsed = parseErrorResponse(lastError, provider);
+  throw new Error(parsed.message);
+}
+
+// Statistics tracking
+async function incrementStats() {
+  const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+  const stats = await chrome.storage.local.get({
+    totalCorrections: 0,
+    dailyCorrections: {},
+    weeklyCorrections: 0,
+    lastResetDate: today
+  });
+  
+  // Reset weekly count if it's a new week (Monday)
+  const lastReset = new Date(stats.lastResetDate);
+  const now = new Date();
+  const daysSinceReset = Math.floor((now - lastReset) / (1000 * 60 * 60 * 24));
+  if (daysSinceReset >= 7 || (now.getDay() === 1 && lastReset.getDay() !== 1)) {
+    stats.weeklyCorrections = 0;
+    stats.lastResetDate = today;
+  }
+  
+  // Increment counters
+  stats.totalCorrections++;
+  stats.weeklyCorrections++;
+  stats.dailyCorrections[today] = (stats.dailyCorrections[today] || 0) + 1;
+  
+  // Clean up old daily stats (keep last 30 days)
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  const cutoffDate = thirtyDaysAgo.toISOString().split('T')[0];
+  for (const date of Object.keys(stats.dailyCorrections)) {
+    if (date < cutoffDate) {
+      delete stats.dailyCorrections[date];
+    }
+  }
+  
+  await chrome.storage.local.set(stats);
+  updateBadge(stats.dailyCorrections[today]);
+  
+  return stats;
+}
+
+function updateBadge(count) {
+  if (count > 0) {
+    chrome.action.setBadgeText({ text: count.toString() });
+    chrome.action.setBadgeBackgroundColor({ color: '#e07a5f' }); // Accent color
+  } else {
+    chrome.action.setBadgeText({ text: '' });
+  }
+}
+
+// Initialize badge on startup
+chrome.storage.local.get({ dailyCorrections: {} }).then(({ dailyCorrections }) => {
+  const today = new Date().toISOString().split('T')[0];
+  const todayCount = dailyCorrections[today] || 0;
+  updateBadge(todayCount);
+});
+
 // Listen for messages from content script
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log('🪄 TypeMagic: Received message:', request.action);
   
+  if (request.action === 'getStats') {
+    chrome.storage.local.get({
+      totalCorrections: 0,
+      dailyCorrections: {},
+      weeklyCorrections: 0
+    }).then(stats => {
+      const today = new Date().toISOString().split('T')[0];
+      sendResponse({
+        total: stats.totalCorrections,
+        today: stats.dailyCorrections[today] || 0,
+        weekly: stats.weeklyCorrections
+      });
+    });
+    return true;
+  }
+  
   if (request.action === 'correctText') {
     handleTextCorrection(request.text, request.tone, request.bulletize, request.summarize)
-      .then(correctedText => {
+      .then(async correctedText => {
         console.log('🪄 TypeMagic: Correction successful');
+        await incrementStats();
         sendResponse({ success: true, correctedText });
       })
       .catch(error => {
@@ -38,36 +198,75 @@ async function handleTextCorrection(text, tone = 'preserve', bulletize = false, 
     ollamaEndpoint: 'http://localhost:11434',
     ollamaModel: 'llama3.2',
     useMarkdown: false,
-    systemPrompt: ''
+    systemPrompt: '',
+    customDictionary: []
   });
   
   console.log('🪄 TypeMagic: Using provider:', settings.provider);
   console.log('🪄 TypeMagic: Markdown enabled:', settings.useMarkdown);
+  console.log('🪄 TypeMagic: Custom dictionary entries:', settings.customDictionary?.length || 0);
   
   // Build the prompt
-  const prompt = buildPrompt(text, settings.useMarkdown, settings.systemPrompt, tone, bulletize, summarize);
+  const prompt = buildPrompt(text, settings.useMarkdown, settings.systemPrompt, tone, bulletize, summarize, settings.customDictionary);
   
-  // Call appropriate API based on provider
+  // Provider display names for error messages
+  const providerNames = {
+    'openai': 'OpenAI',
+    'gemini': 'Google Gemini',
+    'claude': 'Anthropic Claude',
+    'fastapi': 'FastAPI',
+    'ollama': 'Ollama'
+  };
+  const providerName = providerNames[settings.provider] || settings.provider;
+  
+  // Call appropriate API based on provider with retry logic
   switch (settings.provider) {
     case 'openai':
-      return await callOpenAI(prompt, settings.openaiKey, settings.openaiModel);
+      return await withRetry(() => callOpenAI(prompt, settings.openaiKey, settings.openaiModel), providerName);
     case 'gemini':
-      return await callGemini(prompt, settings.geminiKey, settings.geminiModel);
+      return await withRetry(() => callGemini(prompt, settings.geminiKey, settings.geminiModel), providerName);
     case 'claude':
-      return await callClaude(prompt, settings.claudeKey, settings.claudeModel);
+      return await withRetry(() => callClaude(prompt, settings.claudeKey, settings.claudeModel), providerName);
     case 'fastapi':
-      return await callFastAPI(prompt, settings.fastApiEndpoint);
+      return await withRetry(() => callFastAPI(prompt, settings.fastApiEndpoint), providerName);
     case 'ollama':
-      return await callOllama(prompt, settings.ollamaEndpoint, settings.ollamaModel);
+      return await withRetry(() => callOllama(prompt, settings.ollamaEndpoint, settings.ollamaModel), providerName);
     default:
-      throw new Error('Invalid provider selected');
+      throw new Error('Invalid provider selected. Please choose a provider in Settings.');
   }
 }
 
 // Build the correction prompt
-function buildPrompt(text, useMarkdown, customSystemPrompt, tone = 'preserve', bulletize = false, summarize = false) {
+function buildPrompt(text, useMarkdown, customSystemPrompt, tone = 'preserve', bulletize = false, summarize = false, customDictionary = []) {
   // Base instructions for all tones
   let baseInstructions = `You are a precise text correction assistant.`;
+  
+  // Build dictionary instructions if there are custom terms
+  let dictionaryInstructions = '';
+  if (customDictionary && customDictionary.length > 0) {
+    const preserveTerms = customDictionary.filter(e => e.action === 'preserve').map(e => e.term);
+    const ignoreTerms = customDictionary.filter(e => e.action === 'ignore').map(e => e.term);
+    const replaceTerms = customDictionary.filter(e => e.action === 'replace');
+    
+    const parts = [];
+    
+    if (preserveTerms.length > 0) {
+      parts.push(`ALWAYS preserve these terms exactly as written (do not change capitalization or spelling): ${preserveTerms.join(', ')}`);
+    }
+    
+    if (ignoreTerms.length > 0) {
+      parts.push(`IGNORE these terms completely (do not flag as errors or modify): ${ignoreTerms.join(', ')}`);
+    }
+    
+    if (replaceTerms.length > 0) {
+      const replacements = replaceTerms.map(e => `"${e.term}" → "${e.replacement}"`).join(', ');
+      parts.push(`ALWAYS replace these terms: ${replacements}`);
+    }
+    
+    if (parts.length > 0) {
+      dictionaryInstructions = '\n\nCUSTOM DICTIONARY RULES:\n' + parts.map((p, i) => `${i + 1}. ${p}`).join('\n');
+    }
+  }
   
   // Tone-specific instructions
   let toneInstructions = '';
@@ -161,6 +360,11 @@ Return ONLY the corrected text. No explanations, no preamble.`;
   }
   
   let systemPrompt = customSystemPrompt || (baseInstructions + toneInstructions);
+  
+  // Append dictionary instructions to any prompt (custom or default)
+  if (dictionaryInstructions) {
+    systemPrompt += dictionaryInstructions;
+  }
   
   return {
     system: systemPrompt,

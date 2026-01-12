@@ -26,6 +26,10 @@ struct ControlPanelView: View {
                 Button(action: { model.runManualCorrection(summarize: true) }) {
                     Label("Summarize", systemImage: "text.page")
                 }
+                Button(action: { model.performUndo() }) {
+                    Label("Undo", systemImage: "arrow.uturn.backward")
+                }
+                .disabled(!model.canUndo)
             }
             .buttonStyle(.borderedProminent)
             Divider()
@@ -59,25 +63,42 @@ struct ControlPanelView: View {
     }
 
     private var header: some View {
-        HStack {
-            VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
                 Text("TypeMagic for macOS")
                     .font(.headline)
+                Spacer()
+                Button(action: { showSettings = true }) {
+                    Image(systemName: "gearshape")
+                }
+                .buttonStyle(.plain)
+                Button(action: { model.showUserGuide = true }) {
+                    Image(systemName: "questionmark.circle")
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Open TypeMagic User Guide")
+            }
+            HStack {
+                Picker("Provider", selection: providerBinding) {
+                    ForEach(ProviderType.allCases) { provider in
+                        Text(provider.displayName).tag(provider)
+                    }
+                }
+                .pickerStyle(.menu)
+                .frame(maxWidth: 160)
                 Text(model.statusMessage)
                     .font(.caption)
                     .foregroundStyle(model.isProcessing ? Color.orange : Color.secondary)
+                Spacer()
             }
-            Spacer()
-            Button(action: { showSettings = true }) {
-                Image(systemName: "gearshape")
-            }
-            .buttonStyle(.plain)
-            Button(action: { model.showUserGuide = true }) {
-                Image(systemName: "questionmark.circle")
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Open TypeMagic User Guide")
         }
+    }
+    
+    private var providerBinding: Binding<ProviderType> {
+        Binding(
+            get: { model.settingsStore.settings.provider },
+            set: { newValue in model.settingsStore.updateSettings { $0.provider = newValue } }
+        )
     }
 
     private var tonePicker: some View {

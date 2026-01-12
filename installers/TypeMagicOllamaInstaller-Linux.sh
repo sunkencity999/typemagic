@@ -1,56 +1,118 @@
 #!/bin/bash
+set -e
 
 # TypeMagic Ollama Installer for Linux
+# Runs non-interactively to set up Ollama for TypeMagic Chrome extension
 
 LOG_FILE="/tmp/typemagic_ollama_install.log"
 OLLAMA_ORIGIN="chrome-extension://*"
+MAX_WAIT=30
 
-echo "Starting TypeMagic Ollama Setup..." | tee -a "$LOG_FILE"
+log() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') $1" | tee -a "$LOG_FILE"
+}
 
-# 1. Detect Ollama
-if ! command -v ollama &> /dev/null; then
-    echo "Ollama not found. Installing..." | tee -a "$LOG_FILE"
-    curl -fsSL https://ollama.com/install.sh | sh
-else
-    echo "Ollama is already installed." | tee -a "$LOG_FILE"
-fi
+log "Starting TypeMagic Ollama Setup..."
 
-# 2. Set Environment Variable
-echo "Configuring environment variables..." | tee -a "$LOG_FILE"
+# Set the environment variable for THIS session immediately
 export OLLAMA_ORIGINS="$OLLAMA_ORIGIN"
 
-# Persistence depends on distro, but adding to ~/.bashrc is a safe bet for user
-if [ -f "$HOME/.bashrc" ]; then
-    if ! grep -q "OLLAMA_ORIGINS" "$HOME/.bashrc"; then
-        echo "export OLLAMA_ORIGINS=\"$OLLAMA_ORIGIN\"" >> "$HOME/.bashrc"
+# 1. Detect/Install Ollama
+if ! command -v ollama &> /dev/null; then
+    log "Ollama not found. Installing..."
+    # The official installer may prompt for sudo password
+    if curl -fsSL https://ollama.com/install.sh | sh; then
+        log "Ollama installed successfully."
+    else
+        log "ERROR: Failed to install Ollama. Please install manually from https://ollama.com"
+        exit 1
+    fi
+else
+    log "Ollama is already installed."
+fi
+
+# 2. Persist Environment Variable for future shell sessions
+log "Configuring environment variables..."
+
+# Add to .bashrc (most common on Linux)
+BASHRC="$HOME/.bashrc"
+if [ ! -f "$BASHRC" ]; then
+    touch "$BASHRC"
+fi
+
+if ! grep -q "OLLAMA_ORIGINS" "$BASHRC" 2>/dev/null; then
+    echo "export OLLAMA_ORIGINS=\"$OLLAMA_ORIGIN\"" >> "$BASHRC"
+    log "Added OLLAMA_ORIGINS to $BASHRC"
+else
+    log "OLLAMA_ORIGINS already configured in $BASHRC"
+fi
+
+# Also add to .profile for login shells
+PROFILE="$HOME/.profile"
+if [ -f "$PROFILE" ]; then
+    if ! grep -q "OLLAMA_ORIGINS" "$PROFILE" 2>/dev/null; then
+        echo "export OLLAMA_ORIGINS=\"$OLLAMA_ORIGIN\"" >> "$PROFILE"
+        log "Added OLLAMA_ORIGINS to $PROFILE"
     fi
 fi
 
-# Systemd service override (if installed via script) usually requires `systemctl edit ollama.service`
-# We will try to set it for the current user session and the service if possible.
-# Configuring systemd service requires sudo. The install script usually asks for sudo.
-# We will attempt to set the service environment variable if systemd exists.
+# 3. Configure systemd service if it exists (requires sudo)
 if command -v systemctl &> /dev/null; then
-     if systemctl list-units --full -all | grep -q "ollama.service"; then
-        echo "Configuring systemd service..." | tee -a "$LOG_FILE"
-        # This is tricky without interactive sudo/editor. 
-        # We will trust the user session env for now or the fact that 'ollama serve' 
-        # might be run by the user if they don't want the system service.
-        # But standard install enables the service. 
-        # We can try `systemctl set-environment` but that's transient.
-        true
-     fi
+    if systemctl list-unit-files 2>/dev/null | grep -q "ollama.service"; then
+        log "Configuring systemd service environment..."
+        # Create override directory and file
+        OVERRIDE_DIR="/etc/systemd/system/ollama.service.d"
+        OVERRIDE_FILE="$OVERRIDE_DIR/environment.conf"
+        
+        if [ -w "/etc/systemd/system" ] || [ "$(id -u)" -eq 0 ]; then
+            mkdir -p "$OVERRIDE_DIR" 2>/dev/null || sudo mkdir -p "$OVERRIDE_DIR"
+            echo -e "[Service]\nEnvironment=\"OLLAMA_ORIGINS=$OLLAMA_ORIGIN\"" | sudo tee "$OVERRIDE_FILE" > /dev/null
+            sudo systemctl daemon-reload
+            sudo systemctl restart ollama.service 2>/dev/null || true
+            log "Systemd service configured."
+        else
+            log "Note: Run with sudo to configure systemd service, or use user-mode Ollama."
+        fi
+    fi
 fi
 
-# 3. Pull Model
-# Check if serving
-if ! curl -s http://127.0.0.1:11434/api/version > /dev/null; then
-    echo "Starting Ollama server..." | tee -a "$LOG_FILE"
-    ollama serve > /tmp/ollama_serve.log 2>&1 &
-    sleep 5
+# 4. Stop any existing user-mode Ollama server (so we can restart with new env)
+log "Stopping any existing Ollama server..."
+pkill -9 ollama 2>/dev/null || true
+sleep 2
+
+# 5. Start Ollama server with OLLAMA_ORIGINS set
+log "Starting Ollama server with CORS enabled..."
+OLLAMA_ORIGINS="$OLLAMA_ORIGIN" nohup ollama serve > /tmp/ollama_serve.log 2>&1 &
+SERVER_PID=$!
+
+# Wait for server to be ready (with timeout)
+log "Waiting for Ollama server to start..."
+for i in $(seq 1 $MAX_WAIT); do
+    if curl -s http://127.0.0.1:11434/api/version > /dev/null 2>&1; then
+        log "Ollama server is ready."
+        break
+    fi
+    if [ $i -eq $MAX_WAIT ]; then
+        log "ERROR: Ollama server failed to start within ${MAX_WAIT}s. Check /tmp/ollama_serve.log"
+        exit 1
+    fi
+    sleep 1
+done
+
+# 6. Pull Model
+log "Pulling llama3.1:8b model (this may take several minutes)..."
+if ollama pull llama3.1:8b; then
+    log "Model downloaded successfully."
+else
+    log "ERROR: Failed to download model. Please run 'ollama pull llama3.1:8b' manually."
+    exit 1
 fi
 
-echo "Pulling llama3.1:8b model..." | tee -a "$LOG_FILE"
-ollama pull llama3.1:8b
+log "============================================"
+log "Setup Complete!"
+log "Ollama is running with CORS enabled for Chrome extensions."
+log "You can now use TypeMagic with Ollama as your AI provider."
+log "============================================"
 
-echo "Setup Complete!" | tee -a "$LOG_FILE"
+exit 0

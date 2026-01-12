@@ -8,6 +8,7 @@ TypeMagic is a Chrome extension that automatically corrects spelling, grammar, a
 
 ## Features
 
+### Core Features
 - **Keyboard Shortcut**: Press Cmd+Option+T (Mac) or Ctrl+Alt+T (Windows/Linux) for instant corrections
 - **Tone Adjustment**: Choose between "Keep My Voice", "More Professional", or "More Casual"
 - **Quick Actions**: Convert to bullet points or create concise summaries with one click
@@ -18,6 +19,17 @@ TypeMagic is a Chrome extension that automatically corrects spelling, grammar, a
 - **Google Docs Support**: Manual copy/paste workflow for Google Docs compatibility
 - **Privacy-Focused**: Your API keys are stored locally; text is only sent to your chosen AI provider
 - **Clean UI**: Beautiful popup interface with gradient design
+
+### New in v1.5.0
+- **Undo Functionality**: Revert corrections with Cmd+Option+Z (Mac) or Ctrl+Alt+Z (Windows/Linux), or use the Undo button
+- **Quick Provider Switching**: Change AI providers directly from the popup without opening settings
+- **Side-by-Side Diff View**: See exactly what changed with color-coded additions and deletions
+- **Custom Dictionary**: Add terms to preserve (brand names, technical terms) or auto-replace in Settings
+- **Correction Statistics**: Track your daily, weekly, and total corrections with a badge on the extension icon
+- **Keyboard Navigation**: Full keyboard control in popup (⌘↵ correct, ⌘B bullets, ⌘⇧S summarize, 1/2/3 tone)
+- **Onboarding Wizard**: First-time setup guide helps new users configure their AI provider
+- **Better Error Handling**: Automatic retry with exponential backoff for transient API errors
+- **Improved Ollama Installers**: One-click installers for macOS, Linux, and Windows with automatic CORS configuration
 
 ## Installation
 
@@ -231,12 +243,14 @@ To add support for a new AI provider:
 
 Potential features for future versions:
 
-- [ ] Undo/redo functionality
-- [ ] Side-by-side comparison view
-- [ ] Custom correction rules/dictionary
+- [x] ~~Undo/redo functionality~~ ✅ Added in v1.5.0
+- [x] ~~Side-by-side comparison view~~ ✅ Added in v1.5.0
+- [x] ~~Custom correction rules/dictionary~~ ✅ Added in v1.5.0
+- [x] ~~Browser action badge showing correction count~~ ✅ Added in v1.5.0
+- [ ] Streaming responses for real-time feedback
 - [ ] Language detection and translation
-- [ ] Browser action badge showing correction count
-- [ ] Firefox and Edge support
+- [ ] Firefox and Safari support
+- [ ] Shared prompt templates library
 
 ## Contributing
 
@@ -259,7 +273,7 @@ For issues, questions, or suggestions:
 
 **Christopher Bradford**  
 Email: admin@robotbirdservices.com  
-Version: 1.1.0
+Version: 1.5.0
 
 ---
 

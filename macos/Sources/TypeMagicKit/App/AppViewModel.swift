@@ -1,6 +1,12 @@
 import SwiftUI
 import AppKit
 
+struct UndoEntry {
+    let originalText: String
+    let correctedText: String
+    let timestamp: Date
+}
+
 @MainActor
 final class AppViewModel: ObservableObject {
     @Published var manualInput: String = ""
@@ -11,6 +17,10 @@ final class AppViewModel: ObservableObject {
     @Published var useMarkdown: Bool
     @Published var showUserGuide: Bool = false
     @Published var clipboardReady: Bool = false
+    @Published var canUndo: Bool = false
+    
+    private var undoStack: [UndoEntry] = []
+    private let maxUndoHistory = 10
 
     let settingsStore: SettingsStore
 
@@ -28,6 +38,8 @@ final class AppViewModel: ObservableObject {
             Task { await self?.handleGlobalShortcut() }
         } pasteHandler: { [weak self] in
             Task { await self?.handleClipboardPasteEvent() }
+        } undoHandler: { [weak self] in
+            Task { @MainActor in self?.performUndo() }
         }
     }
 
@@ -52,9 +64,13 @@ final class AppViewModel: ObservableObject {
         do {
             let request = CorrectionRequest(tone: selectedTone, bulletize: bulletize, summarize: summarize, useMarkdown: useMarkdown)
             let result = try await engine.correctManualText(trimmed, request: request)
+            
+            // Store for undo
+            pushUndo(original: trimmed, corrected: result.correctedText)
+            
             manualOutput = result.correctedText
             manualInput = result.correctedText
-            statusMessage = "Copied to clipboard"
+            statusMessage = "Copied to clipboard (⌘⌥Z to undo)"
             clipboardReady = true
         } catch {
             statusMessage = error.localizedDescription
@@ -96,11 +112,15 @@ final class AppViewModel: ObservableObject {
         do {
             let request = CorrectionRequest(tone: selectedTone, bulletize: false, summarize: false, useMarkdown: useMarkdown)
             let result = try await engine.correctManualText(clipboardText, request: request)
+            
+            // Store for undo
+            pushUndo(original: clipboardText, corrected: result.correctedText)
+            
             manualOutput = result.correctedText
             pasteboard.clearContents()
             pasteboard.setString(result.correctedText, forType: .string)
             lastClipboardChangeCount = pasteboard.changeCount
-            statusMessage = "Clipboard updated"
+            statusMessage = "Clipboard updated (⌘⌥Z to undo)"
             clipboardReady = true
         } catch {
             statusMessage = error.localizedDescription
@@ -121,5 +141,38 @@ final class AppViewModel: ObservableObject {
         } else {
             clipboardReady = false
         }
+    }
+    
+    // MARK: - Undo Support
+    
+    private func pushUndo(original: String, corrected: String) {
+        let entry = UndoEntry(originalText: original, correctedText: corrected, timestamp: Date())
+        undoStack.append(entry)
+        
+        // Limit history size
+        if undoStack.count > maxUndoHistory {
+            undoStack.removeFirst()
+        }
+        
+        canUndo = true
+    }
+    
+    func performUndo() {
+        guard let entry = undoStack.popLast() else {
+            statusMessage = "Nothing to undo"
+            return
+        }
+        
+        // Restore original text
+        manualInput = entry.originalText
+        manualOutput = entry.originalText
+        
+        // Copy to clipboard
+        pasteboard.clearContents()
+        pasteboard.setString(entry.originalText, forType: .string)
+        lastClipboardChangeCount = pasteboard.changeCount
+        
+        statusMessage = "Undo successful"
+        canUndo = !undoStack.isEmpty
     }
 }

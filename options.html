@@ -474,6 +474,122 @@
         color: #059669;
         font-weight: bold;
     }
+    
+    .dictionary-container {
+      background: #f9fafb;
+      border-radius: 10px;
+      padding: 16px;
+      border: 1px solid #e5e7eb;
+    }
+    
+    .dictionary-list {
+      max-height: 200px;
+      overflow-y: auto;
+      margin-bottom: 12px;
+    }
+    
+    .dictionary-entry {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      background: white;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      border: 1px solid #e5e7eb;
+    }
+    
+    .dictionary-entry .term {
+      font-weight: 600;
+      color: var(--primary-color);
+      flex: 1;
+    }
+    
+    .dictionary-entry .action {
+      font-size: 12px;
+      color: #6b7280;
+      padding: 2px 8px;
+      background: #f3f4f6;
+      border-radius: 4px;
+    }
+    
+    .dictionary-entry .action.preserve {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+    
+    .dictionary-entry .action.ignore {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    
+    .dictionary-entry .action.replace {
+      background: #d1fae5;
+      color: #065f46;
+    }
+    
+    .dictionary-entry .replacement {
+      font-size: 12px;
+      color: #059669;
+    }
+    
+    .dictionary-entry .delete-btn {
+      background: none;
+      border: none;
+      color: #9ca3af;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 0 4px;
+    }
+    
+    .dictionary-entry .delete-btn:hover {
+      color: #ef4444;
+    }
+    
+    .dictionary-add {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .dictionary-add input[type="text"] {
+      flex: 1;
+      min-width: 120px;
+      padding: 8px 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    
+    .dictionary-add select {
+      padding: 8px 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 14px;
+      background: white;
+    }
+    
+    .btn-add-dict {
+      padding: 8px 16px;
+      background: var(--accent-color);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-add-dict:hover {
+      background: #c96a52;
+    }
+    
+    .dictionary-empty {
+      text-align: center;
+      color: #9ca3af;
+      padding: 20px;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
@@ -639,6 +755,29 @@
             <strong>Use Markdown Formatting</strong>
             <div class="help-text">Enable this to format corrected text with Markdown (headers, bold, italic, lists, etc.)</div>
           </label>
+        </div>
+      </div>
+      
+      <!-- Custom Dictionary -->
+      <div class="section">
+        <div class="section-title">📖 Custom Dictionary</div>
+        <div class="help-text" style="margin-bottom: 12px;">
+          Add terms the AI should preserve exactly (brand names, technical terms, acronyms) or words to always ignore/replace.
+        </div>
+        <div class="dictionary-container">
+          <div class="dictionary-list" id="dictionaryList">
+            <!-- Dictionary entries will be added here -->
+          </div>
+          <div class="dictionary-add">
+            <input type="text" id="newDictTerm" placeholder="Term (e.g., TypeMagic, API)">
+            <select id="newDictAction">
+              <option value="preserve">Preserve exactly</option>
+              <option value="ignore">Ignore (don't correct)</option>
+              <option value="replace">Replace with...</option>
+            </select>
+            <input type="text" id="newDictReplacement" placeholder="Replacement" style="display: none;">
+            <button class="btn-add-dict" id="addDictBtn">+ Add</button>
+          </div>
         </div>
       </div>
       

@@ -122,6 +122,99 @@
       color: #991b1b;
     }
     
+    .stats-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #f3f4f6;
+      font-size: 11px;
+      color: #6b7280;
+    }
+    
+    .stat-item {
+      cursor: default;
+    }
+    
+    .stat-item span {
+      font-weight: 700;
+      color: var(--accent-color);
+    }
+    
+    .stat-divider {
+      color: #d1d5db;
+    }
+    
+    .provider-select {
+      padding: 4px 8px;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      background: white;
+      color: var(--primary-color);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    
+    .provider-select:hover {
+      border-color: var(--accent-color);
+    }
+    
+    .provider-select:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 2px rgba(224, 122, 95, 0.2);
+    }
+    
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 22px;
+    }
+    
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #e5e7eb;
+      transition: 0.3s;
+      border-radius: 22px;
+    }
+    
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    
+    .toggle-switch input:checked + .toggle-slider {
+      background-color: var(--accent-color);
+    }
+    
+    .toggle-switch input:checked + .toggle-slider:before {
+      transform: translateX(18px);
+    }
+    
     .btn {
       width: 100%;
       padding: 12px;
@@ -174,12 +267,243 @@
       background: #f3f4f6;
     }
     
+    .button-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    
+    .button-row .btn {
+      flex: 1;
+      margin-bottom: 0;
+    }
+    
+    .btn-undo {
+      background: white;
+      color: #6b7280;
+      border: 1px solid #e5e7eb;
+    }
+    
+    .btn-undo:hover:not(:disabled) {
+      border-color: #f59e0b;
+      color: #f59e0b;
+      background: #fffbeb;
+    }
+    
+    .btn-undo:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
     .footer {
       text-align: center;
       margin-top: 18px;
       font-size: 11px;
       color: #9ca3af;
       font-weight: 500;
+    }
+    
+    .shortcuts-hint {
+      font-size: 10px;
+      color: #6b7280;
+      margin-bottom: 6px;
+      padding: 6px 8px;
+      background: #f3f4f6;
+      border-radius: 6px;
+    }
+    
+    .shortcuts-hint strong {
+      color: var(--primary-color);
+    }
+    
+    .diff-view {
+      margin-top: 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      background: #fafafa;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+    
+    .diff-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: #f3f4f6;
+      border-bottom: 1px solid #e5e7eb;
+      border-radius: 8px 8px 0 0;
+    }
+    
+    .diff-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--secondary-color);
+    }
+    
+    .diff-close {
+      background: none;
+      border: none;
+      font-size: 16px;
+      color: #9ca3af;
+      cursor: pointer;
+      padding: 0 4px;
+      line-height: 1;
+    }
+    
+    .diff-close:hover {
+      color: var(--primary-color);
+    }
+    
+    .diff-content {
+      padding: 10px 12px;
+      font-size: 12px;
+      line-height: 1.6;
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    
+    .diff-added {
+      background: #d1fae5;
+      color: #065f46;
+      padding: 1px 3px;
+      border-radius: 3px;
+    }
+    
+    .diff-removed {
+      background: #fee2e2;
+      color: #991b1b;
+      text-decoration: line-through;
+      padding: 1px 3px;
+      border-radius: 3px;
+    }
+    
+    .diff-unchanged {
+      color: #6b7280;
+    }
+    
+    .onboarding-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.98);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .onboarding-content {
+      text-align: center;
+      max-width: 380px;
+    }
+    
+    .onboarding-step {
+      animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .onboarding-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+    
+    .onboarding-content h2 {
+      font-family: var(--font-main);
+      font-size: 24px;
+      color: var(--primary-color);
+      margin-bottom: 12px;
+    }
+    
+    .onboarding-content p {
+      color: #6b7280;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    
+    .onboarding-providers {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    
+    .onboarding-provider-btn {
+      padding: 10px 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      background: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .onboarding-provider-btn:hover {
+      border-color: var(--accent-color);
+      color: var(--accent-color);
+    }
+    
+    .onboarding-provider-btn.selected {
+      border-color: var(--primary-color);
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    .onboarding-key-input {
+      margin: 16px 0;
+    }
+    
+    .onboarding-key-input input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    
+    .onboarding-key-help {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 8px;
+    }
+    
+    .onboarding-key-help a {
+      color: var(--accent-color);
+    }
+    
+    .onboarding-tips {
+      text-align: left;
+      margin-bottom: 20px;
+    }
+    
+    .onboarding-tips .tip {
+      padding: 10px 12px;
+      background: #f9fafb;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+    
+    .onboarding-tips kbd {
+      background: var(--primary-color);
+      color: white;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+    
+    .onboarding-skip {
+      margin-top: 8px;
+      font-size: 13px;
     }
     
     .google-docs-section {
@@ -313,15 +637,31 @@
   <div class="status">
     <div class="status-item">
       <span class="status-label">Provider:</span>
-      <span class="status-value" id="provider">Loading...</span>
+      <select id="providerSelect" class="provider-select">
+        <option value="openai">OpenAI</option>
+        <option value="gemini">Google Gemini</option>
+        <option value="claude">Anthropic Claude</option>
+        <option value="ollama">Ollama (Local)</option>
+        <option value="fastapi">FastAPI</option>
+      </select>
     </div>
     <div class="status-item">
       <span class="status-label">Markdown:</span>
-      <span class="status-value" id="markdown">Loading...</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="markdownToggle">
+        <span class="toggle-slider"></span>
+      </label>
     </div>
     <div class="status-item">
       <span class="status-label">Status:</span>
       <span class="status-value" id="status">Loading...</span>
+    </div>
+    <div class="stats-row">
+      <span class="stat-item" title="Corrections today"><span id="statToday">0</span> today</span>
+      <span class="stat-divider">•</span>
+      <span class="stat-item" title="Corrections this week"><span id="statWeekly">0</span> this week</span>
+      <span class="stat-divider">•</span>
+      <span class="stat-item" title="Total corrections"><span id="statTotal">0</span> total</span>
     </div>
   </div>
   
@@ -347,18 +687,73 @@
     </div>
     
     <textarea id="googleDocsText" placeholder="Paste your text here..."></textarea>
+    
+    <div id="diffView" class="diff-view" style="display: none;">
+      <div class="diff-header">
+        <span class="diff-title">Changes Made</span>
+        <button id="closeDiffBtn" class="diff-close">×</button>
+      </div>
+      <div class="diff-content" id="diffContent"></div>
+    </div>
   </div>
   
   <div class="buttons">
     <button id="correctBtn" class="btn btn-accent">✨ Correct Text</button>
-    <button id="settingsBtn" class="btn btn-primary">⚙️ Open Settings</button>
-    <button id="testBtn" class="btn btn-secondary">🧪 Test Connection</button>
+    <div class="button-row">
+      <button id="undoBtn" class="btn btn-undo" disabled>↩️ Undo</button>
+      <button id="settingsBtn" class="btn btn-primary">⚙️ Settings</button>
+      <button id="testBtn" class="btn btn-secondary">🧪 Test</button>
+    </div>
   </div>
   
   <div class="footer">
+    <div class="shortcuts-hint">
+      <strong>Shortcuts:</strong> ⌘↵ Correct • ⌘B Bullets • ⌘⇧S Summarize • ⌘Z Undo • 1/2/3 Tone
+    </div>
     For other sites: Click in a text field, then click "Correct Text"
   </div>
   
+  <!-- Onboarding Overlay -->
+  <div id="onboardingOverlay" class="onboarding-overlay" style="display: none;">
+    <div class="onboarding-content">
+      <div class="onboarding-step" data-step="1">
+        <div class="onboarding-icon">✨</div>
+        <h2>Welcome to TypeMagic!</h2>
+        <p>AI-powered text correction that preserves your voice. Let's get you set up in 30 seconds.</p>
+        <button class="btn btn-accent onboarding-next">Get Started →</button>
+      </div>
+      
+      <div class="onboarding-step" data-step="2" style="display: none;">
+        <div class="onboarding-icon">🔑</div>
+        <h2>Choose Your AI Provider</h2>
+        <p>Select a provider and enter your API key. We recommend OpenAI for best results.</p>
+        <div class="onboarding-providers">
+          <button class="onboarding-provider-btn" data-provider="openai">OpenAI</button>
+          <button class="onboarding-provider-btn" data-provider="gemini">Gemini</button>
+          <button class="onboarding-provider-btn" data-provider="claude">Claude</button>
+          <button class="onboarding-provider-btn" data-provider="ollama">Ollama (Free)</button>
+        </div>
+        <div class="onboarding-key-input" style="display: none;">
+          <input type="password" id="onboardingApiKey" placeholder="Paste your API key here...">
+          <div class="onboarding-key-help" id="onboardingKeyHelp"></div>
+        </div>
+        <button class="btn btn-accent onboarding-next" id="onboardingStep2Next" disabled>Continue →</button>
+        <button class="btn btn-secondary onboarding-skip">Skip for now</button>
+      </div>
+      
+      <div class="onboarding-step" data-step="3" style="display: none;">
+        <div class="onboarding-icon">⌨️</div>
+        <h2>How to Use TypeMagic</h2>
+        <div class="onboarding-tips">
+          <div class="tip"><strong>Keyboard Shortcut:</strong> Press <kbd>⌘⌥T</kbd> (Mac) or <kbd>Ctrl+Alt+T</kbd> (Win) to correct text instantly</div>
+          <div class="tip"><strong>Popup:</strong> Paste text here and click "Correct Text"</div>
+          <div class="tip"><strong>Tone:</strong> Choose to keep your voice, go professional, or casual</div>
+        </div>
+        <button class="btn btn-accent onboarding-finish">Start Correcting! ✨</button>
+      </div>
+    </div>
+  </div>
+
   <script src="popup.js"></script>
 </body>
 </html>

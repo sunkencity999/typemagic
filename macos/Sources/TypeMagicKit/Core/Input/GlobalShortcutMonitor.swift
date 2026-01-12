@@ -6,13 +6,16 @@ final class GlobalShortcutMonitor {
     private var localMonitor: Any?
     private var shortcutHandler: (() -> Void)?
     private var pasteHandler: (() -> Void)?
+    private var undoHandler: (() -> Void)?
     private let keyCodeT: CGKeyCode = 17
     private let keyCodeV: CGKeyCode = 9
+    private let keyCodeZ: CGKeyCode = 6
 
-    func start(shortcutHandler: @escaping () -> Void, pasteHandler: (() -> Void)? = nil) {
+    func start(shortcutHandler: @escaping () -> Void, pasteHandler: (() -> Void)? = nil, undoHandler: (() -> Void)? = nil) {
         stop()
         self.shortcutHandler = shortcutHandler
         self.pasteHandler = pasteHandler
+        self.undoHandler = undoHandler
         registerMonitors()
     }
 
@@ -28,6 +31,7 @@ final class GlobalShortcutMonitor {
         localMonitor = nil
         shortcutHandler = nil
         pasteHandler = nil
+        undoHandler = nil
     }
 
     private func registerMonitors() {
@@ -48,6 +52,8 @@ final class GlobalShortcutMonitor {
 
         if flags.isSuperset(of: [.command, .option]), keyCode == keyCodeT {
             shortcutHandler?()
+        } else if flags.isSuperset(of: [.command, .option]), keyCode == keyCodeZ {
+            undoHandler?()
         } else if flags.contains(.command) && !flags.contains(.option) && keyCode == keyCodeV {
             pasteHandler?()
         }

@@ -1,72 +1,137 @@
 #!/bin/bash
 
 # TypeMagic Ollama Installer for macOS
-# Post-install script running as root
+# Post-install script running as root (from .pkg installer)
 
 LOG_FILE="/tmp/typemagic_ollama_install.log"
 OLLAMA_ORIGIN="chrome-extension://*"
+MAX_WAIT=30
 
-echo "Starting TypeMagic Ollama Setup (Post-install)..." | tee -a "$LOG_FILE"
+log() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') $1" | tee -a "$LOG_FILE"
+}
+
+log "Starting TypeMagic Ollama Setup (Post-install)..."
 
 # Detect the real user (the one currently logged into the console)
-CONSOLE_USER=$(stat -f "%Su" /dev/console)
+CONSOLE_USER=$(stat -f "%Su" /dev/console 2>/dev/null)
 
 if [ -z "$CONSOLE_USER" ] || [ "$CONSOLE_USER" = "root" ]; then
-    # Fallback if no console user (e.g. ssh install), try to find a non-root user?
-    # For now, just use root if we have to, but warn.
-    echo "Warning: console user is root or not found. Installing as root." | tee -a "$LOG_FILE"
-    TARGET_USER="root"
-    USER_HOME="/var/root"
+    # Fallback: try to find a non-root user from /Users
+    CONSOLE_USER=$(ls /Users | grep -v Shared | grep -v Guest | head -1)
+    if [ -z "$CONSOLE_USER" ]; then
+        log "Warning: No console user found. Installing as root."
+        TARGET_USER="root"
+        USER_HOME="/var/root"
+    else
+        TARGET_USER="$CONSOLE_USER"
+        USER_HOME="/Users/$TARGET_USER"
+    fi
 else
     TARGET_USER="$CONSOLE_USER"
-    USER_HOME=$(dscl . -read /Users/$TARGET_USER NFSHomeDirectory | awk '{print $2}')
+    USER_HOME=$(dscl . -read /Users/$TARGET_USER NFSHomeDirectory 2>/dev/null | awk '{print $2}')
+    if [ -z "$USER_HOME" ]; then
+        USER_HOME="/Users/$TARGET_USER"
+    fi
 fi
 
-echo "Target User: $TARGET_USER" | tee -a "$LOG_FILE"
-echo "User Home: $USER_HOME" | tee -a "$LOG_FILE"
+log "Target User: $TARGET_USER"
+log "User Home: $USER_HOME"
 
 # 1. Detect/Install Ollama (System-wide)
 if ! command -v ollama &> /dev/null; then
-    echo "Ollama not found. Installing..." | tee -a "$LOG_FILE"
-    curl -fsSL https://ollama.com/install.sh | sh
+    log "Ollama not found. Installing..."
+    if curl -fsSL https://ollama.com/install.sh | sh; then
+        log "Ollama installed successfully."
+    else
+        log "ERROR: Failed to install Ollama."
+        exit 1
+    fi
 else
-    echo "Ollama is already installed." | tee -a "$LOG_FILE"
+    log "Ollama is already installed."
 fi
 
 # 2. Set Environment Variable for the USER
-echo "Configuring environment variables..." | tee -a "$LOG_FILE"
+log "Configuring environment variables..."
 
-# Update Zshrc
-RC_FILE="$USER_HOME/.zshrc"
-if [ ! -f "$RC_FILE" ]; then
-    RC_FILE="$USER_HOME/.bash_profile" # Fallback
+# Create .zshrc if it doesn't exist (macOS default shell)
+ZSHRC="$USER_HOME/.zshrc"
+if [ ! -f "$ZSHRC" ]; then
+    touch "$ZSHRC"
+    chown "$TARGET_USER" "$ZSHRC"
 fi
 
-# Just append to .zshrc to be safe for macOS default
-RC_FILE_ZSH="$USER_HOME/.zshrc"
-
-if ! grep -q "OLLAMA_ORIGINS" "$RC_FILE_ZSH" 2>/dev/null; then
-    echo "export OLLAMA_ORIGINS=\"$OLLAMA_ORIGIN\"" >> "$RC_FILE_ZSH"
-    chown "$TARGET_USER" "$RC_FILE_ZSH"
+if ! grep -q "OLLAMA_ORIGINS" "$ZSHRC" 2>/dev/null; then
+    echo "export OLLAMA_ORIGINS=\"$OLLAMA_ORIGIN\"" >> "$ZSHRC"
+    chown "$TARGET_USER" "$ZSHRC"
+    log "Added OLLAMA_ORIGINS to $ZSHRC"
+else
+    log "OLLAMA_ORIGINS already configured in $ZSHRC"
 fi
 
-# 3. Pull Model as USER
-# We need to ensure the service is running.
-# Restart ollama to pick up potential system env changes? 
-# Or just rely on the user session.
+# Also add to .bash_profile if it exists
+BASH_PROFILE="$USER_HOME/.bash_profile"
+if [ -f "$BASH_PROFILE" ]; then
+    if ! grep -q "OLLAMA_ORIGINS" "$BASH_PROFILE" 2>/dev/null; then
+        echo "export OLLAMA_ORIGINS=\"$OLLAMA_ORIGIN\"" >> "$BASH_PROFILE"
+        chown "$TARGET_USER" "$BASH_PROFILE"
+        log "Added OLLAMA_ORIGINS to $BASH_PROFILE"
+    fi
+fi
 
-pkill ollama || true
+# 3. Stop any existing Ollama server
+log "Stopping any existing Ollama server..."
+pkill -9 ollama 2>/dev/null || true
 sleep 2
 
-# Start ollama as user in background to pull
-echo "Starting Ollama as $TARGET_USER to pull model..." | tee -a "$LOG_FILE"
+# 4. Start Ollama server as user with OLLAMA_ORIGINS set
+log "Starting Ollama server as $TARGET_USER with CORS enabled..."
 
-sudo -u "$TARGET_USER" bash -c "nohup ollama serve > /dev/null 2>&1 &"
-sleep 5
+# Use launchctl to properly start the process as the user
+# This ensures the process survives after the script exits
+if [ "$TARGET_USER" != "root" ]; then
+    USER_UID=$(id -u "$TARGET_USER")
+    launchctl asuser "$USER_UID" sudo -u "$TARGET_USER" sh -c "OLLAMA_ORIGINS='$OLLAMA_ORIGIN' ollama serve > /tmp/ollama_serve.log 2>&1 &"
+else
+    OLLAMA_ORIGINS="$OLLAMA_ORIGIN" ollama serve > /tmp/ollama_serve.log 2>&1 &
+fi
 
-echo "Pulling llama3.1:8b..." | tee -a "$LOG_FILE"
-sudo -u "$TARGET_USER" ollama pull llama3.1:8b
+# Wait for server to be ready (with timeout)
+log "Waiting for Ollama server to start..."
+for i in $(seq 1 $MAX_WAIT); do
+    if curl -s http://127.0.0.1:11434/api/version > /dev/null 2>&1; then
+        log "Ollama server is ready."
+        break
+    fi
+    if [ $i -eq $MAX_WAIT ]; then
+        log "ERROR: Ollama server failed to start within ${MAX_WAIT}s. Check /tmp/ollama_serve.log"
+        exit 1
+    fi
+    sleep 1
+done
 
-echo "Setup Complete!" | tee -a "$LOG_FILE"
+# 5. Pull Model as USER
+log "Pulling llama3.1:8b model (this may take several minutes)..."
+if [ "$TARGET_USER" != "root" ]; then
+    if sudo -u "$TARGET_USER" ollama pull llama3.1:8b; then
+        log "Model downloaded successfully."
+    else
+        log "ERROR: Failed to download model."
+        exit 1
+    fi
+else
+    if ollama pull llama3.1:8b; then
+        log "Model downloaded successfully."
+    else
+        log "ERROR: Failed to download model."
+        exit 1
+    fi
+fi
+
+log "============================================"
+log "Setup Complete!"
+log "Ollama is running with CORS enabled for Chrome extensions."
+log "You can now use TypeMagic with Ollama as your AI provider."
+log "============================================"
 
 exit 0

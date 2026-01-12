@@ -5,6 +5,21 @@ console.log('🪄 TypeMagic: Content script loaded');
 
 // Listen for messages from popup
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === 'undoCorrection') {
+    const result = undoLastCorrection();
+    sendResponse(result);
+    return true;
+  }
+  
+  if (request.action === 'getUndoState') {
+    sendResponse({ 
+      canUndo: lastOriginalText.length > 0,
+      originalText: lastOriginalText,
+      correctedText: lastCorrectedText
+    });
+    return true;
+  }
+  
   if (request.action === 'triggerCorrection') {
     // Find the currently focused element or use Google Docs editor
     const activeElement = document.activeElement;
@@ -37,6 +52,12 @@ const PROCESSING_CLASS = 'typemagic-processing';
 // Store the last selected text (for Google Docs)
 let lastSelectedText = '';
 let selectionListenerSetup = false;
+
+// Undo history - stores last correction for each element
+const undoHistory = new Map();
+let lastCorrectedElement = null;
+let lastOriginalText = '';
+let lastCorrectedText = '';
 
 // Get text from element
 function getTextFromElement(element) {
@@ -198,11 +219,23 @@ async function correctText(element, icon, tone = 'preserve') {
     console.log('🪄 TypeMagic: Response received:', response);
     
     if (response && response.success) {
+      // Store for undo before replacing
+      lastOriginalText = originalText;
+      lastCorrectedText = response.correctedText;
+      lastCorrectedElement = element;
+      
+      // Store in element-specific history
+      undoHistory.set(element, {
+        original: originalText,
+        corrected: response.correctedText,
+        timestamp: Date.now()
+      });
+      
       await setTextInElement(element, response.correctedText);
       
       // Show success notification (Google Docs will show its own message)
       if (!window.location.hostname.includes('docs.google.com')) {
-        showNotification('✅ Text corrected!', 'success');
+        showNotification('✅ Text corrected! Press Cmd+Z to undo', 'success');
       }
     } else {
       // Extract error message properly
@@ -225,6 +258,41 @@ async function correctText(element, icon, tone = 'preserve') {
     showNotification('❌ Error: ' + error.message, 'error');
   } finally {
     icon.classList.remove(PROCESSING_CLASS);
+  }
+}
+
+// Undo the last correction
+function undoLastCorrection() {
+  if (!lastOriginalText || !lastCorrectedElement) {
+    return { success: false, error: 'Nothing to undo' };
+  }
+  
+  try {
+    // Check if element still exists in DOM
+    if (!document.body.contains(lastCorrectedElement)) {
+      // Try to find the active element instead
+      const activeElement = document.activeElement;
+      if (isEditableElement(activeElement)) {
+        setTextInElement(activeElement, lastOriginalText);
+        showNotification('↩️ Undo successful (restored to active field)', 'success');
+      } else {
+        return { success: false, error: 'Original element no longer available' };
+      }
+    } else {
+      setTextInElement(lastCorrectedElement, lastOriginalText);
+      showNotification('↩️ Undo successful', 'success');
+    }
+    
+    // Clear undo state
+    const undoneText = lastOriginalText;
+    lastOriginalText = '';
+    lastCorrectedText = '';
+    lastCorrectedElement = null;
+    
+    return { success: true, restoredText: undoneText };
+  } catch (error) {
+    console.error('🪄 TypeMagic: Undo error:', error);
+    return { success: false, error: error.message };
   }
 }
 
@@ -512,6 +580,27 @@ function setupSelectionTracking() {
     });
   }
 }
+
+// Keyboard shortcut: Cmd+Option+Z (macOS) or Ctrl+Alt+Z (Windows/Linux) to undo TypeMagic correction
+document.addEventListener('keydown', (e) => {
+  const isMac = navigator.platform.toUpperCase().includes('MAC');
+  const isZ = e.key === 'Z' || e.key === 'z' || e.code === 'KeyZ' || e.keyCode === 90;
+  
+  // Cmd+Option+Z on macOS, Ctrl+Alt+Z on Windows/Linux for TypeMagic undo
+  const isMacUndoShortcut = isMac && e.metaKey && e.altKey && isZ;
+  const isWindowsUndoShortcut = !isMac && e.ctrlKey && e.altKey && isZ;
+  
+  if (isMacUndoShortcut || isWindowsUndoShortcut) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    console.log('🪄 TypeMagic: Undo shortcut triggered (Cmd+Option+Z / Ctrl+Alt+Z)');
+    const result = undoLastCorrection();
+    if (!result.success) {
+      showNotification('⚠️ ' + (result.error || 'Nothing to undo'), 'warning');
+    }
+  }
+}, true);
 
 // Keyboard shortcut: Cmd+Option+T (macOS) or Ctrl+Alt+T (Windows/Linux) to correct selected text
 document.addEventListener('keydown', async (e) => {
