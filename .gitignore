@@ -34,3 +34,9 @@ installers/*.log
 
 # Xcode/SwiftPM state
 typemagic/typemagic.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+
+# Xcode user-specific UI state
+*.xcuserstate
+**/*.xcuserstate
+xcuserdata/
+**/xcuserdata/
