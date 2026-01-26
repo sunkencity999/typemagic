@@ -9,8 +9,8 @@ struct CorrectionRequest {
 
 enum CorrectionSource {
     case manualInput
-    case accessibility
     case clipboard
+    case service
 }
 
 struct CorrectionResult {
@@ -24,36 +24,20 @@ final class TypeMagicEngine {
     private let settingsStore: SettingsStore
     private let promptBuilder = PromptBuilder()
     private let providerRouter = ProviderRouter()
-    private let accessibility = AccessibilityTextService()
     private let clipboard = ClipboardManager()
 
     init(settingsStore: SettingsStore) {
         self.settingsStore = settingsStore
     }
 
-    func ensureAccessibilityPermission() -> Bool {
-        if accessibility.hasPermission() { return true }
-        accessibility.requestPermissionIfNeeded()
-        return accessibility.hasPermission()
-    }
-
-    func correctFocusedText(request: CorrectionRequest) async throws -> CorrectionResult {
-        do {
-            let text = try accessibility.captureFocusedText()
-            let corrected = try await correct(text: text, request: request)
-            if try accessibility.replaceFocusedText(with: corrected) {
-                return CorrectionResult(originalText: text, correctedText: corrected, source: .accessibility)
-            }
-            clipboard.write(corrected)
-            return CorrectionResult(originalText: text, correctedText: corrected, source: .clipboard)
-        } catch let error as AccessibilityError {
-            // Fallback to clipboard if accessibility fails or permission is denied (e.g. Sandboxed)
-            let clipboardText = clipboard.readString()
-            guard !clipboardText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { throw error }
-            let corrected = try await correct(text: clipboardText, request: request)
-            clipboard.write(corrected)
-            return CorrectionResult(originalText: clipboardText, correctedText: corrected, source: .clipboard)
+    func correctClipboardText(request: CorrectionRequest) async throws -> CorrectionResult {
+        let clipboardText = clipboard.readString()
+        guard !clipboardText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw TypeMagicError.emptyClipboard
         }
+        let corrected = try await correct(text: clipboardText, request: request)
+        clipboard.write(corrected)
+        return CorrectionResult(originalText: clipboardText, correctedText: corrected, source: .clipboard)
     }
 
     func correctManualText(_ text: String, request: CorrectionRequest) async throws -> CorrectionResult {
@@ -62,7 +46,11 @@ final class TypeMagicEngine {
         return CorrectionResult(originalText: text, correctedText: corrected, source: .manualInput)
     }
 
-    private func correct(text: String, request: CorrectionRequest) async throws -> String {
+    func correctServiceText(_ text: String, request: CorrectionRequest) async throws -> String {
+        try await correct(text: text, request: request)
+    }
+
+    func correct(text: String, request: CorrectionRequest) async throws -> String {
         let options = PromptOptions(
             tone: request.tone,
             useMarkdown: request.useMarkdown,
@@ -72,5 +60,19 @@ final class TypeMagicEngine {
         )
         let prompt = promptBuilder.build(text: text, options: options)
         return try await providerRouter.run(prompt: prompt, settings: settingsStore.settings, secrets: settingsStore.secrets)
+    }
+}
+
+enum TypeMagicError: LocalizedError {
+    case emptyClipboard
+    case serviceError(String)
+
+    var errorDescription: String? {
+        switch self {
+        case .emptyClipboard:
+            return "Clipboard is empty. Copy some text first."
+        case .serviceError(let message):
+            return message
+        }
     }
 }

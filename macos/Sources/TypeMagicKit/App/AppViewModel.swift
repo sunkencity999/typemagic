@@ -78,29 +78,11 @@ final class AppViewModel: ObservableObject {
         isProcessing = false
     }
 
-    func runFocusedCorrection(bulletize: Bool = false, summarize: Bool = false) {
-        Task { await self.performFocusedCorrection(bulletize: bulletize, summarize: summarize) }
+    func runClipboardCorrection(bulletize: Bool = false, summarize: Bool = false) {
+        Task { await self.performClipboardCorrection(bulletize: bulletize, summarize: summarize) }
     }
 
-    private func performFocusedCorrection(bulletize: Bool, summarize: Bool) async {
-        guard engine.ensureAccessibilityPermission() else {
-            statusMessage = "Grant Accessibility permission"
-            return
-        }
-        isProcessing = true
-        statusMessage = "Correcting selection..."
-        do {
-            let request = CorrectionRequest(tone: selectedTone, bulletize: bulletize, summarize: summarize, useMarkdown: useMarkdown)
-            let result = try await engine.correctFocusedText(request: request)
-            manualOutput = result.correctedText
-            statusMessage = result.source == .accessibility ? "Replaced selection" : "Copied to clipboard"
-        } catch {
-            statusMessage = error.localizedDescription
-        }
-        isProcessing = false
-    }
-
-    private func performClipboardCorrection() async {
+    private func performClipboardCorrection(bulletize: Bool = false, summarize: Bool = false) async {
         clipboardReady = false
         guard let clipboardText = pasteboard.string(forType: .string)?.trimmingCharacters(in: .whitespacesAndNewlines), !clipboardText.isEmpty else {
             statusMessage = "Copy text before pressing ⌘⌥T"
@@ -110,7 +92,7 @@ final class AppViewModel: ObservableObject {
         isProcessing = true
         statusMessage = "Correcting clipboard..."
         do {
-            let request = CorrectionRequest(tone: selectedTone, bulletize: false, summarize: false, useMarkdown: useMarkdown)
+            let request = CorrectionRequest(tone: selectedTone, bulletize: bulletize, summarize: summarize, useMarkdown: useMarkdown)
             let result = try await engine.correctManualText(clipboardText, request: request)
             
             // Store for undo

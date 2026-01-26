@@ -34,18 +34,21 @@ struct ControlPanelView: View {
             .buttonStyle(.borderedProminent)
             Divider()
             VStack(alignment: .leading, spacing: 8) {
-                Text("Selection Controls")
+                Text("Clipboard Controls")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                Text("Copy text first, then use these buttons")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
                 HStack {
-                    Button(action: { model.runFocusedCorrection() }) {
-                        Label("Correct Selection", systemImage: "sparkles")
+                    Button(action: { model.runClipboardCorrection() }) {
+                        Label("Correct Clipboard", systemImage: "sparkles")
                     }
-                    Button(action: { model.runFocusedCorrection(bulletize: true) }) {
-                        Label("Bulletize Selection", systemImage: "list.clipboard")
+                    Button(action: { model.runClipboardCorrection(bulletize: true) }) {
+                        Label("Bulletize Clipboard", systemImage: "list.clipboard")
                     }
-                    Button(action: { model.runFocusedCorrection(summarize: true) }) {
-                        Label("Summarize Selection", systemImage: "doc.text.magnifyingglass")
+                    Button(action: { model.runClipboardCorrection(summarize: true) }) {
+                        Label("Summarize Clipboard", systemImage: "doc.text.magnifyingglass")
                     }
                 }
                 .buttonStyle(.bordered)
@@ -77,6 +80,11 @@ struct ControlPanelView: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Open TypeMagic User Guide")
+                Button(action: { NSApplication.shared.terminate(nil) }) {
+                    Image(systemName: "xmark.circle")
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Quit TypeMagic")
             }
             HStack {
                 Picker("Provider", selection: providerBinding) {

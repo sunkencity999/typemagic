@@ -33,9 +33,22 @@
 		3927F96C2EDE9F3B007953CA /* typemagicUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = typemagicUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		39D7A0042EE0B000009ABCDE /* Exceptions for "typemagic" folder in "typemagic" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 3927F9532EDE9F39007953CA /* typemagic */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		3927F9562EDE9F39007953CA /* typemagic */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				39D7A0042EE0B000009ABCDE /* Exceptions for "typemagic" folder in "typemagic" target */,
+			);
 			path = typemagic;
 			sourceTree = "<group>";
 		};
@@ -412,17 +425,14 @@
 				DEVELOPMENT_TEAM = JKMMZ55D86;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Type Magic";
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
-				INFOPLIST_KEY_LSUIElement = YES;
-				INFOPLIST_KEY_NSAppleEventsUsageDescription = "TypeMagic needs access to control and paste text inside other applications.";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = typemagic/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 2.3;
+				MARKETING_VERSION = 2.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bradford.typeR198x.typemagic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -445,17 +455,14 @@
 				DEVELOPMENT_TEAM = JKMMZ55D86;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Type Magic";
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
-				INFOPLIST_KEY_LSUIElement = YES;
-				INFOPLIST_KEY_NSAppleEventsUsageDescription = "TypeMagic needs access to control and paste text inside other applications.";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = typemagic/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 2.3;
+				MARKETING_VERSION = 2.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bradford.typeR198x.typemagic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;

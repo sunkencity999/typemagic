@@ -113,11 +113,16 @@ final class StatusItemController: NSObject {
 @MainActor
 public final class TypeMagicAppCoordinator {
     private var statusController: StatusItemController?
+    private var servicesProvider: ServicesProvider?
 
     public init() {
         let store = SettingsStore()
         let model = AppViewModel(settingsStore: store)
         statusController = StatusItemController(viewModel: model)
+        
+        servicesProvider = ServicesProvider(settingsStore: store)
+        NSApp.servicesProvider = servicesProvider
+        NSUpdateDynamicServices()
     }
 }
 
