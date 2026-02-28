@@ -89,6 +89,25 @@ Available templates for `generate_from_template`:
 
 Call `list_templates` to see the exact field keys and descriptions.
 
+## Example Prompts for Your AI Agent
+
+Copy-paste these into Claude Desktop, Cursor, or any MCP-connected agent:
+
+| Prompt | Tools Used |
+|--------|------------|
+| *"Polish this email to sound professional but warm, then translate it into Spanish for my colleague in Madrid."* | `polish_text` → `translate_text` |
+| *"List my TypeMagic voice profiles. Then take these meeting notes and turn them into a blog post using my 'Blog Casual' voice."* | `list_profiles` → `custom_instruction` |
+| *"Generate a cover letter for a Senior Product Manager role at Stripe. Highlight my 5 years of B2B SaaS experience."* | `generate_from_template` |
+| *"Take this PR description and convert it into executive-friendly bullet points. Target audience: non-technical leadership."* | `convert_to_bullets` |
+| *"Check this document for grammar, clarity, and style issues. Then fix any issues you find by polishing the text."* | `check_text` → `polish_text` |
+| *"Translate this product announcement into French, German, and Japanese. Keep it concise and professional."* | `translate_text` × 3 |
+| *"Here are my raw meeting notes. Generate a structured meeting summary, then also give me a concise TL;DR."* | `generate_from_template` → `summarize_text` |
+| *"Give me 3 alternative ways to phrase this call-to-action, then polish the best one in a friendly tone."* | `rephrase_text` → `polish_text` |
+| *"Take this README and reformat it as clean Markdown with proper headings. Target audience: developers."* | `format_as_markdown` |
+| *"Polish this technical explanation once in a casual tone for team Slack, and once in a professional tone for the client email."* | `polish_text` × 2 |
+
+**Power move:** Chain multiple tools in one prompt. Your agent calls them in sequence automatically. *"Check my essay for issues, polish it in my CEO voice, then give me a concise summary."* — three TypeMagic tools, one prompt.
+
 ## Supported Languages (translate_text)
 
 Spanish, French, German, Italian, Portuguese, Dutch, Russian, Japanese, Korean, Chinese (Simplified), Hindi, Arabic, English

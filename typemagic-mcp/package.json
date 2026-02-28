@@ -1,12 +1,20 @@
 {
   "name": "typemagic-mcp",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "MCP server for TypeMagic — AI writing assistant tools for Claude, Cursor, and other MCP-compatible agents",
   "main": "index.js",
   "bin": {
-    "typemagic-mcp": "./index.js"
+    "typemagic-mcp": "index.js"
   },
-  "keywords": ["mcp", "typemagic", "writing", "ai", "polish", "grammar", "translation"],
+  "keywords": [
+    "mcp",
+    "typemagic",
+    "writing",
+    "ai",
+    "polish",
+    "grammar",
+    "translation"
+  ],
   "author": "Christopher Bradford",
   "license": "MIT",
   "engines": {
