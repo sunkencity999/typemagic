@@ -1,12 +1,41 @@
 # TypeMagic
 
-**AI-Powered Text Correction & Formatting for Chrome**
+**AI-Powered Writing Assistant — Web Editor, Mac App & Chrome Extension**
 
-TypeMagic is a Chrome extension that automatically corrects spelling, grammar, and formatting in any text field across the web. Type freely without worrying about accuracy—let AI handle the corrections!
+TypeMagic is an AI-powered writing assistant that polishes your text while preserving your unique voice. Available as a **full-featured web editor**, a **native Mac app**, and a **Chrome extension**.
 
-**Instant Corrections with Keyboard Shortcut**: Press Cmd+Option+T (Mac) or Ctrl+Alt+T (Windows/Linux) to instantly correct the entire field of text, or specific selected text anywhere on the web.
+- **Web Editor** — [typemagic.pro/app](https://typemagic.pro/app) — Full writing environment with AI polish, inline suggestions, voice profiles, translation, templates, voice dictation, analytics, and more.
+- **Mac App** — System-wide shortcut: select text anywhere, press Cmd+Option+T, and get polished text instantly.
+- **Chrome Extension** — Bring TypeMagic polish to any text field on the web.
 
-## Features
+---
+
+## Web Editor Features
+
+The web editor at [typemagic.pro](https://typemagic.pro) is a premium writing environment ($12/month) with:
+
+- **AI Actions** — Polish, Summarize, Bullets, Markdown, Custom prompt
+- **Inline Suggestions (Check)** — Grammarly-style colored underlines with accept/dismiss per issue
+- **Sentence Rephrase** — Select text, get 3 alternative phrasings, click to replace
+- **Real-Time Translation** — 13 languages with polished, natural-sounding output
+- **AI Document Templates** — 8 pre-built templates (Cover Letter, Cold Email, Meeting Summary, Project Proposal, Blog Post, Complaint Letter, Thank You Note, Executive Summary)
+- **AI Voice Profiles** — Create writing personas with traits and sample text; AI emulates your style
+- **Voice Dictation** — Built-in microphone input via Web Speech API (Chrome/Edge/Safari)
+- **Writing Goals** — Audience, Formality, Domain, and Intent selectors injected into every prompt
+- **Personal Dictionary** — Add words the Check engine should never flag
+- **Writing Analytics Dashboard** — Track words written, sessions, readability trends, streaks, and 12 gamified milestones
+- **Document Storage** — Firestore-backed save/open/new with auto-save
+- **Multi-Format Export** — Download as .txt, .docx, or .pdf
+- **Diff View** — See exactly what the AI changed with red/green highlighting
+- **Readability Score** — Real-time Flesch-Kincaid score (0–100) with animated ring
+- **Tone Selector** — Keep, Professional, Casual, Friendly, Concise
+- **Dark Mode** — Full dark theme
+
+For web editor setup, see [`typemagic_website/SETUP.md`](typemagic_website/SETUP.md).
+
+---
+
+## Chrome Extension
 
 ### Core Features
 - **Keyboard Shortcut**: Press Cmd+Option+T (Mac) or Ctrl+Alt+T (Windows/Linux) for instant corrections
@@ -248,9 +277,9 @@ Potential features for future versions:
 - [x] ~~Custom correction rules/dictionary~~ ✅ Added in v1.5.0
 - [x] ~~Browser action badge showing correction count~~ ✅ Added in v1.5.0
 - [ ] Streaming responses for real-time feedback
-- [ ] Language detection and translation
+- [x] ~~Language detection and translation~~ ✅ Added in Web Editor (13 languages)
 - [ ] Firefox and Safari support
-- [ ] Shared prompt templates library
+- [x] ~~Shared prompt templates library~~ ✅ Added in Web Editor (8 AI Document Templates)
 
 ## Contributing
 
