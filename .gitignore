@@ -24,6 +24,9 @@ test.html
 # Website
 typemagic_website/
 
+# Private planning documents
+IMPROVEMENT_AND_HARDENING_PLAN.md
+
 # Releases
 *.zip
 
